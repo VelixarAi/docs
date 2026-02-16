@@ -1,0 +1,71 @@
+---
+title: "Python SDK"
+description: "Install and use the Velixar Python client."
+---
+
+## Install
+
+```bash
+pip install velixar
+```
+
+## Quick start
+
+```python
+from velixar import Velixar
+
+client = Velixar(api_key="vlx_your_key")
+
+# Store
+mem = client.store("User prefers dark mode", user_id="user_123", tier=0)
+print(mem.id)  # mem_abc123
+
+# Search
+results = client.search("display preferences", user_id="user_123", limit=5)
+for r in results:
+    print(f"{r.score:.2f} — {r.content}")
+
+# Get
+memory = client.get(mem.id)
+
+# Delete
+client.delete(mem.id)
+```
+
+## Configuration
+
+```python
+client = Velixar(
+    api_key="vlx_your_key",
+    base_url="https://api.velixar.ai/v1",  # default
+    timeout=30,                              # seconds
+)
+```
+
+## Store options
+
+```python
+client.store(
+    content="User's company is Acme Corp",
+    user_id="user_123",
+    tier=0,                    # 0=pinned, 1=session, 2=semantic, 3=org
+    type="fact",               # fact, preference, context
+    tags=["company", "profile"],
+    metadata={"source": "onboarding"}
+)
+```
+
+## Search with filters
+
+```python
+results = client.search(
+    query="company information",
+    user_id="user_123",
+    limit=10,
+    tiers=[0, 2]  # Only pinned + semantic
+)
+```
+
+## Source
+
+[github.com/VelixarAIInc/velixar-python](https://github.com/VelixarAIInc/velixar-python)

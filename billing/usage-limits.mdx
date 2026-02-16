@@ -1,0 +1,43 @@
+---
+title: "Usage Limits"
+description: "How usage limits and rate limiting work."
+---
+
+## Monthly limits
+
+Each plan has monthly limits for **memory stores** and **retrievals**. Usage resets on the 1st of each month (UTC).
+
+Check your current usage via the [dashboard](https://app.velixar.ai/settings/api-usage) or API:
+
+```bash
+curl https://api.velixar.ai/v1/usage \
+  -H "Authorization: Bearer vlx_your_key"
+```
+
+## Rate limiting
+
+Rate limits are per-minute, per API key. When exceeded, the API returns `429`:
+
+```json
+{
+  "error": "rate_limit_exceeded",
+  "message": "Rate limit exceeded",
+  "retry_after": 42
+}
+```
+
+Response headers on every request:
+
+```
+X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 287
+X-RateLimit-Reset: 1708099260
+```
+
+## Free tier behavior
+
+On the free tier, requests are **hard-blocked** when limits are reached. No overage is allowed.
+
+## Paid tier behavior
+
+On paid tiers, requests continue past the limit and overage charges apply. See [Overages](/billing/overages).

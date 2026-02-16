@@ -1,0 +1,22 @@
+---
+title: "Health Check"
+api: "GET /v1/health"
+description: "Check API availability."
+---
+
+No authentication required.
+
+<RequestExample>
+```bash cURL
+curl https://api.velixar.ai/v1/health
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "status": "ok",
+  "version": "1.0.0"
+}
+```
+</ResponseExample>

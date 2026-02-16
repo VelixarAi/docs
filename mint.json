@@ -1,0 +1,108 @@
+{
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Velixar",
+  "logo": {
+    "dark": "/images/logo-dark.svg",
+    "light": "/images/logo-light.svg"
+  },
+  "favicon": "/images/favicon.png",
+  "colors": {
+    "primary": "#7C3AED",
+    "light": "#A78BFA",
+    "dark": "#5B21B6",
+    "anchors": {
+      "from": "#7C3AED",
+      "to": "#5B21B6"
+    }
+  },
+  "topbarLinks": [
+    {
+      "name": "Dashboard",
+      "url": "https://app.velixar.ai"
+    }
+  ],
+  "topbarCtaButton": {
+    "name": "Get API Key",
+    "url": "https://app.velixar.ai/settings/api-keys"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api-reference"
+    },
+    {
+      "name": "SDKs",
+      "url": "sdks"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        "introduction",
+        "quickstart/overview",
+        "quickstart/authentication"
+      ]
+    },
+    {
+      "group": "Core Concepts",
+      "pages": [
+        "concepts/memories",
+        "concepts/tiers",
+        "concepts/extraction"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/chatbot-memory",
+        "guides/user-preferences",
+        "guides/rag-augmentation"
+      ]
+    },
+    {
+      "group": "Billing",
+      "pages": [
+        "billing/plans",
+        "billing/usage-limits",
+        "billing/overages"
+      ]
+    },
+    {
+      "group": "Memory API",
+      "pages": [
+        "api-reference/introduction",
+        "api-reference/store-memory",
+        "api-reference/search-memories",
+        "api-reference/get-memory",
+        "api-reference/list-memories",
+        "api-reference/update-memory",
+        "api-reference/delete-memory",
+        "api-reference/health"
+      ]
+    },
+    {
+      "group": "SDKs",
+      "pages": [
+        "sdks/overview",
+        "sdks/python",
+        "sdks/javascript",
+        "sdks/langchain"
+      ]
+    }
+  ],
+  "footerSocials": {
+    "github": "https://github.com/VelixarAIInc",
+    "discord": "https://discord.gg/velixar"
+  },
+  "feedback": {
+    "thumbsRating": true
+  },
+  "api": {
+    "baseUrl": "https://api.velixar.ai",
+    "auth": {
+      "method": "bearer",
+      "name": "Authorization"
+    }
+  }
+}

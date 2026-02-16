@@ -1,0 +1,52 @@
+---
+title: "Get Memory"
+api: "GET /v1/memory/{id}"
+description: "Retrieve a specific memory by ID."
+---
+
+## Path parameters
+
+<ParamField path="id" type="string" required>
+  The memory ID.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl https://api.velixar.ai/v1/memory/mem_abc123 \
+  -H "Authorization: Bearer vlx_your_key"
+```
+
+```python Python
+resp = requests.get("https://api.velixar.ai/v1/memory/mem_abc123",
+    headers={"Authorization": "Bearer vlx_your_key"})
+```
+
+```javascript JavaScript
+const resp = await fetch("https://api.velixar.ai/v1/memory/mem_abc123", {
+  headers: { "Authorization": "Bearer vlx_your_key" }
+});
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "id": "mem_abc123",
+  "content": "User prefers dark mode and metric units",
+  "user_id": "user_123",
+  "tier": 0,
+  "type": "preference",
+  "tags": ["settings", "ui"],
+  "metadata": {},
+  "created_at": "2026-02-16T10:30:00Z",
+  "updated_at": "2026-02-16T10:30:00Z"
+}
+```
+
+```json 404
+{
+  "error": "not_found",
+  "message": "Memory not found"
+}
+```
+</ResponseExample>

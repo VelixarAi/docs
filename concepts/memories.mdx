@@ -1,0 +1,49 @@
+---
+title: "Memories"
+description: "What memories are and how they're structured."
+---
+
+A **memory** is a unit of knowledge stored in Velixar. It can be a fact, a preference, a decision, a conversation summary — anything your AI should remember.
+
+## Memory structure
+
+```json
+{
+  "id": "mem_abc123",
+  "content": "User prefers dark mode and metric units",
+  "user_id": "user_123",
+  "tier": 0,
+  "type": "preference",
+  "tags": ["settings", "ui"],
+  "metadata": {},
+  "score": 0.92,
+  "created_at": "2026-02-16T10:30:00Z",
+  "updated_at": "2026-02-16T10:30:00Z"
+}
+```
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | string | Unique memory ID (UUID) |
+| `content` | string | The memory text — this is what gets embedded and searched |
+| `user_id` | string | Owner of this memory, for multi-user isolation |
+| `tier` | integer | Storage tier (0–3), controls priority and retention |
+| `type` | string | `fact`, `preference`, `context`, or custom |
+| `tags` | array | Filterable labels |
+| `metadata` | object | Arbitrary key-value data |
+| `score` | float | Relevance score (only in search results) |
+
+## Memory types
+
+- **fact** — Objective information: "User's company is Acme Corp"
+- **preference** — User choices: "Prefers concise responses"
+- **context** — Situational: "Currently working on Q1 budget"
+- **custom** — Any string you define
+
+## Embedding & search
+
+When you store a memory, Velixar generates a vector embedding of the `content` field. Search queries are also embedded, and results are ranked by cosine similarity.
+
+This means you search by **meaning**, not keywords:
+- Query: "what color does the user like?" → matches "User's favorite color is blue"
+- Query: "display settings" → matches "User prefers dark mode"

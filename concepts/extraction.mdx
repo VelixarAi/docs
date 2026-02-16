@@ -1,0 +1,59 @@
+---
+title: "Auto-Extraction"
+description: "Automatically extract memories from conversations."
+---
+
+Velixar can automatically extract key facts, preferences, and decisions from conversations — no manual tagging required.
+
+## How it works
+
+<Steps>
+  <Step title="Conversation flows normally">
+    Your user chats with your AI. No changes to your chat flow needed.
+  </Step>
+  <Step title="Extraction triggers">
+    Extraction runs on two triggers:
+    - **Session end** — `POST /api/session/end` fires extraction on the full conversation
+    - **Periodic** — Every 10 messages as a fallback
+  </Step>
+  <Step title="LLM extracts memories">
+    An LLM analyzes the conversation and pulls out discrete facts, preferences, and decisions with a salience score.
+  </Step>
+  <Step title="Dedup & conflict resolution">
+    - **Semantic dedup**: If a new memory has cosine similarity > 0.85 with an existing one, it's skipped
+    - **Conflict resolution**: If the new memory contradicts an old one, the old memory is deleted and the new one is stored
+  </Step>
+  <Step title="Tier routing">
+    Memories are auto-routed based on salience:
+    - Salience ≥ 0.8 → **Tier 0** (pinned)
+    - Salience < 0.8 → **Tier 2** (semantic)
+  </Step>
+</Steps>
+
+## Example
+
+A user says during a chat:
+
+> "Actually, I switched from VS Code to Cursor last week. And I prefer TypeScript over JavaScript now."
+
+Velixar extracts:
+
+| Memory | Type | Salience | Tier |
+|---|---|---|---|
+| "User's primary editor is Cursor (switched from VS Code)" | preference | 0.85 | 0 |
+| "User prefers TypeScript over JavaScript" | preference | 0.82 | 0 |
+
+If a previous memory said "User's primary editor is VS Code", it gets deleted and replaced.
+
+## Triggering extraction
+
+End a session to trigger extraction:
+
+```bash
+curl -X POST https://api.velixar.ai/api/session/end \
+  -H "Authorization: Bearer vlx_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{"session_id": "sess_abc123"}'
+```
+
+The extraction runs asynchronously. Extracted memories appear in your memory store within seconds.

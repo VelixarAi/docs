@@ -1,0 +1,74 @@
+---
+title: "API Reference"
+description: "Complete reference for the Velixar Memory API."
+---
+
+## Base URL
+
+```
+https://api.velixar.ai/v1
+```
+
+## Authentication
+
+All endpoints require a Bearer token:
+
+```bash
+Authorization: Bearer vlx_your_api_key
+```
+
+## Endpoints
+
+<CardGroup cols={2}>
+  <Card title="POST /v1/memory" icon="plus" href="/api-reference/store-memory">
+    Store a new memory
+  </Card>
+  <Card title="GET /v1/memory/search" icon="magnifying-glass" href="/api-reference/search-memories">
+    Search memories by semantic similarity
+  </Card>
+  <Card title="GET /v1/memory/:id" icon="eye" href="/api-reference/get-memory">
+    Retrieve a specific memory
+  </Card>
+  <Card title="GET /v1/memory/list" icon="list" href="/api-reference/list-memories">
+    List memories with pagination
+  </Card>
+  <Card title="PATCH /v1/memory/:id" icon="pen" href="/api-reference/update-memory">
+    Update a memory
+  </Card>
+  <Card title="DELETE /v1/memory/:id" icon="trash" href="/api-reference/delete-memory">
+    Delete a memory
+  </Card>
+  <Card title="GET /v1/health" icon="heart-pulse" href="/api-reference/health">
+    Health check
+  </Card>
+</CardGroup>
+
+## Common response format
+
+All successful responses return JSON:
+
+```json
+{
+  "data": { ... },
+  "status": "ok"
+}
+```
+
+## Error format
+
+```json
+{
+  "error": "error_code",
+  "message": "Human-readable description",
+  "status": 400
+}
+```
+
+| Code | Error | Description |
+|---|---|---|
+| 400 | `bad_request` | Invalid parameters |
+| 401 | `unauthorized` | Missing or invalid API key |
+| 403 | `forbidden` | Key lacks required scope |
+| 404 | `not_found` | Memory not found |
+| 429 | `rate_limit_exceeded` | Too many requests |
+| 500 | `internal_error` | Server error |

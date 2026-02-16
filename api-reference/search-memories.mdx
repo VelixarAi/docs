@@ -1,0 +1,72 @@
+---
+title: "Search Memories"
+api: "GET /v1/memory/search"
+description: "Search memories using semantic similarity."
+---
+
+## Query parameters
+
+<ParamField query="q" type="string" required>
+  Natural language search query.
+</ParamField>
+
+<ParamField query="user_id" type="string">
+  Filter results to a specific user.
+</ParamField>
+
+<ParamField query="limit" type="integer" default="10">
+  Maximum number of results (1–100).
+</ParamField>
+
+<ParamField query="tiers" type="string" default="0,1,2,3">
+  Comma-separated tier filter. Example: `0,2` for pinned + semantic only.
+</ParamField>
+
+## Response
+
+<ResponseField name="memories" type="array">
+  Array of matching memories, sorted by relevance score.
+</ResponseField>
+
+<ResponseField name="count" type="integer">
+  Number of results returned.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.velixar.ai/v1/memory/search?q=user%20preferences&limit=5" \
+  -H "Authorization: Bearer vlx_your_key"
+```
+
+```python Python
+resp = requests.get("https://api.velixar.ai/v1/memory/search",
+    headers={"Authorization": "Bearer vlx_your_key"},
+    params={"q": "user preferences", "limit": 5})
+```
+
+```javascript JavaScript
+const params = new URLSearchParams({ q: "user preferences", limit: "5" });
+const resp = await fetch(`https://api.velixar.ai/v1/memory/search?${params}`, {
+  headers: { "Authorization": "Bearer vlx_your_key" }
+});
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "memories": [
+    {
+      "id": "mem_abc123",
+      "content": "User prefers dark mode and metric units",
+      "tier": 0,
+      "type": "preference",
+      "score": 0.92,
+      "tags": ["settings", "ui"],
+      "created_at": "2026-02-16T10:30:00Z"
+    }
+  ],
+  "count": 1
+}
+```
+</ResponseExample>
