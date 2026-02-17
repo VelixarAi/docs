@@ -12,17 +12,17 @@ description: "Delete a memory. Requires memory:delete scope."
 
 <RequestExample>
 ```bash cURL
-curl -X DELETE https://api.velixar.ai/v1/memory/mem_abc123 \
+curl -X DELETE https://api.velixarai.com/v1/memory/mem_abc123 \
   -H "Authorization: Bearer vlx_your_key"
 ```
 
 ```python Python
-resp = requests.delete("https://api.velixar.ai/v1/memory/mem_abc123",
+resp = requests.delete("https://api.velixarai.com/v1/memory/mem_abc123",
     headers={"Authorization": "Bearer vlx_your_key"})
 ```
 
 ```javascript JavaScript
-const resp = await fetch("https://api.velixar.ai/v1/memory/mem_abc123", {
+const resp = await fetch("https://api.velixarai.com/v1/memory/mem_abc123", {
   method: "DELETE",
   headers: { "Authorization": "Bearer vlx_your_key" }
 });

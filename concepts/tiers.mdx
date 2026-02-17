@@ -44,19 +44,19 @@ You can always override the tier manually via the API.
 
 ```bash
 # Pin a critical preference (tier 0)
-curl -X POST https://api.velixar.ai/v1/memory \
+curl -X POST https://api.velixarai.com/v1/memory \
   -H "Authorization: Bearer vlx_your_key" \
   -H "Content-Type: application/json" \
   -d '{"content": "User is allergic to peanuts", "tier": 0, "type": "fact"}'
 
 # Store session context (tier 1)
-curl -X POST https://api.velixar.ai/v1/memory \
+curl -X POST https://api.velixarai.com/v1/memory \
   -H "Authorization: Bearer vlx_your_key" \
   -H "Content-Type: application/json" \
   -d '{"content": "Currently debugging auth flow", "tier": 1, "type": "context"}'
 
 # Org-wide knowledge (tier 3)
-curl -X POST https://api.velixar.ai/v1/memory \
+curl -X POST https://api.velixarai.com/v1/memory \
   -H "Authorization: Bearer vlx_your_key" \
   -H "Content-Type: application/json" \
   -d '{"content": "Company uses PostgreSQL for all services", "tier": 3, "type": "fact"}'

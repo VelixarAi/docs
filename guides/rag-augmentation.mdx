@@ -23,7 +23,7 @@ import openai
 
 def answer(user_id: str, query: str, rag_results: list[str]) -> str:
     # Fetch personal memories
-    memories = requests.get("https://api.velixar.ai/v1/memory/search",
+    memories = requests.get("https://api.velixarai.com/v1/memory/search",
         headers={"Authorization": "Bearer vlx_your_key"},
         params={"q": query, "user_id": user_id, "limit": 5}
     ).json().get("memories", [])

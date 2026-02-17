@@ -34,19 +34,19 @@ description: "Search memories using semantic similarity."
 
 <RequestExample>
 ```bash cURL
-curl "https://api.velixar.ai/v1/memory/search?q=user%20preferences&limit=5" \
+curl "https://api.velixarai.com/v1/memory/search?q=user%20preferences&limit=5" \
   -H "Authorization: Bearer vlx_your_key"
 ```
 
 ```python Python
-resp = requests.get("https://api.velixar.ai/v1/memory/search",
+resp = requests.get("https://api.velixarai.com/v1/memory/search",
     headers={"Authorization": "Bearer vlx_your_key"},
     params={"q": "user preferences", "limit": 5})
 ```
 
 ```javascript JavaScript
 const params = new URLSearchParams({ q: "user preferences", limit: "5" });
-const resp = await fetch(`https://api.velixar.ai/v1/memory/search?${params}`, {
+const resp = await fetch(`https://api.velixarai.com/v1/memory/search?${params}`, {
   headers: { "Authorization": "Bearer vlx_your_key" }
 });
 ```

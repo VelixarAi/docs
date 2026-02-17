@@ -11,7 +11,7 @@ Use tier-0 pinned memories to store preferences that should always be recalled.
 import requests
 
 headers = {"Authorization": "Bearer vlx_your_key"}
-url = "https://api.velixar.ai/v1/memory"
+url = "https://api.velixarai.com/v1/memory"
 
 # Store multiple preferences
 prefs = [
@@ -34,7 +34,7 @@ for pref in prefs:
 
 ```python
 # At the start of every conversation, load user preferences
-resp = requests.get("https://api.velixar.ai/v1/memory/search",
+resp = requests.get("https://api.velixarai.com/v1/memory/search",
     headers=headers,
     params={
         "q": "user preferences and settings",
@@ -53,16 +53,16 @@ When a user says "actually, switch me to light mode":
 
 ```python
 # Search for the old preference
-old = requests.get("https://api.velixar.ai/v1/memory/search",
+old = requests.get("https://api.velixarai.com/v1/memory/search",
     headers=headers,
     params={"q": "dark mode light mode theme", "user_id": "user_123", "tiers": "0"}
 ).json()["memories"]
 
 # Delete old, store new
 if old:
-    requests.delete(f"https://api.velixar.ai/v1/memory/{old[0]['id']}", headers=headers)
+    requests.delete(f"https://api.velixarai.com/v1/memory/{old[0]['id']}", headers=headers)
 
-requests.post("https://api.velixar.ai/v1/memory", headers=headers, json={
+requests.post("https://api.velixarai.com/v1/memory", headers=headers, json={
     "content": "User prefers light mode",
     "user_id": "user_123",
     "tier": 0,

@@ -42,7 +42,7 @@ description: "Store a new memory."
 
 <RequestExample>
 ```bash cURL
-curl -X POST https://api.velixar.ai/v1/memory \
+curl -X POST https://api.velixarai.com/v1/memory \
   -H "Authorization: Bearer vlx_your_key" \
   -H "Content-Type: application/json" \
   -d '{
@@ -57,7 +57,7 @@ curl -X POST https://api.velixar.ai/v1/memory \
 ```python Python
 import requests
 
-resp = requests.post("https://api.velixar.ai/v1/memory",
+resp = requests.post("https://api.velixarai.com/v1/memory",
     headers={"Authorization": "Bearer vlx_your_key"},
     json={
         "content": "User prefers dark mode and metric units",
@@ -69,7 +69,7 @@ resp = requests.post("https://api.velixar.ai/v1/memory",
 ```
 
 ```javascript JavaScript
-const resp = await fetch("https://api.velixar.ai/v1/memory", {
+const resp = await fetch("https://api.velixarai.com/v1/memory", {
   method: "POST",
   headers: {
     "Authorization": "Bearer vlx_your_key",

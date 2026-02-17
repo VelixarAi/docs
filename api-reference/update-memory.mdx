@@ -30,14 +30,14 @@ description: "Update an existing memory."
 
 <RequestExample>
 ```bash cURL
-curl -X PATCH https://api.velixar.ai/v1/memory/mem_abc123 \
+curl -X PATCH https://api.velixarai.com/v1/memory/mem_abc123 \
   -H "Authorization: Bearer vlx_your_key" \
   -H "Content-Type: application/json" \
   -d '{"content": "User prefers light mode now", "tier": 0}'
 ```
 
 ```python Python
-resp = requests.patch("https://api.velixar.ai/v1/memory/mem_abc123",
+resp = requests.patch("https://api.velixarai.com/v1/memory/mem_abc123",
     headers={"Authorization": "Bearer vlx_your_key"},
     json={"content": "User prefers light mode now", "tier": 0})
 ```

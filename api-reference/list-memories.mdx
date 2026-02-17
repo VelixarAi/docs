@@ -24,12 +24,12 @@ description: "List memories with pagination."
 
 <RequestExample>
 ```bash cURL
-curl "https://api.velixar.ai/v1/memory/list?user_id=user_123&limit=10" \
+curl "https://api.velixarai.com/v1/memory/list?user_id=user_123&limit=10" \
   -H "Authorization: Bearer vlx_your_key"
 ```
 
 ```python Python
-resp = requests.get("https://api.velixar.ai/v1/memory/list",
+resp = requests.get("https://api.velixarai.com/v1/memory/list",
     headers={"Authorization": "Bearer vlx_your_key"},
     params={"user_id": "user_123", "limit": 10})
 ```
