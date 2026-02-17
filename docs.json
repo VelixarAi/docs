@@ -97,6 +97,7 @@
               "sdks/overview",
               "sdks/python",
               "sdks/javascript",
+              "sdks/cli",
               "sdks/langchain"
             ]
           }

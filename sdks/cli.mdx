@@ -1,0 +1,72 @@
+---
+title: "CLI"
+description: "Use the Velixar Memory API from your terminal."
+---
+
+## Install
+
+```bash
+pip install velixar-cli
+```
+
+## Authenticate
+
+```bash
+velixar auth login
+# paste your API key (vlx_...)
+```
+
+Or use an environment variable:
+```bash
+export VELIXAR_API_KEY="vlx_your_key"
+```
+
+## Commands
+
+### Store a memory
+
+```bash
+velixar store "User prefers dark mode" --tier 0
+```
+
+### Search memories
+
+```bash
+velixar search "user preferences" --limit 10
+```
+
+### List memories
+
+```bash
+velixar list --limit 20
+```
+
+### Get a memory
+
+```bash
+velixar get mem_abc123
+```
+
+### Delete a memory
+
+```bash
+velixar delete mem_abc123
+```
+
+### Health check
+
+```bash
+velixar health
+```
+
+### Interactive shell
+
+```bash
+velixar interactive
+```
+
+Launches a REPL where you can run `store`, `search`, `list`, `get`, and `delete` commands without the `velixar` prefix.
+
+## Source
+
+[github.com/VelixarAi/velixar-cli](https://github.com/VelixarAi/velixar-cli)
