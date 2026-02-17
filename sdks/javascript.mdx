@@ -1,0 +1,67 @@
+---
+title: "JavaScript SDK"
+description: "Install and use the Velixar JavaScript/Node.js client."
+---
+
+## Install
+
+```bash
+npm install velixar
+```
+
+## Quick start
+
+```javascript
+import { Velixar } from 'velixar';
+
+const client = new Velixar({ apiKey: 'vlx_your_key' });
+
+// Store
+const mem = await client.store({
+  content: 'User prefers dark mode',
+  userId: 'user_123',
+  tier: 0
+});
+console.log(mem.id); // mem_abc123
+
+// Search
+const results = await client.search({
+  query: 'display preferences',
+  userId: 'user_123',
+  limit: 5
+});
+results.forEach(r => console.log(`${r.score} — ${r.content}`));
+
+// Get
+const memory = await client.get(mem.id);
+
+// Delete
+await client.delete(mem.id);
+```
+
+## Configuration
+
+```javascript
+const client = new Velixar({
+  apiKey: 'vlx_your_key',
+  baseUrl: 'https://api.velixar.ai/v1', // default
+  timeout: 30000,                         // ms
+});
+```
+
+## TypeScript
+
+The SDK is written in TypeScript with full type definitions:
+
+```typescript
+import { Velixar, Memory, SearchResult } from 'velixar';
+
+const results: SearchResult[] = await client.search({
+  query: 'user preferences',
+  userId: 'user_123'
+});
+```
+
+## Source
+
+[github.com/VelixarAIInc/velixar-js](https://github.com/VelixarAIInc/velixar-js)

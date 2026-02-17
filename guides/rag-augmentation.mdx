@@ -1,0 +1,59 @@
+---
+title: "RAG Augmentation"
+description: "Use Velixar as a personal knowledge base alongside your RAG pipeline."
+---
+
+Velixar complements traditional RAG by adding **personal context** on top of your document retrieval.
+
+## The pattern
+
+```
+User query
+    ├── RAG pipeline → relevant documents
+    └── Velixar      → relevant personal memories
+                ↓
+        Combined context → LLM → response
+```
+
+## Implementation
+
+```python
+import requests
+import openai
+
+def answer(user_id: str, query: str, rag_results: list[str]) -> str:
+    # Fetch personal memories
+    memories = requests.get("https://api.velixar.ai/v1/memory/search",
+        headers={"Authorization": "Bearer vlx_your_key"},
+        params={"q": query, "user_id": user_id, "limit": 5}
+    ).json().get("memories", [])
+
+    memory_context = "\n".join(f"- {m['content']}" for m in memories)
+    doc_context = "\n".join(f"- {doc}" for doc in rag_results)
+
+    response = openai.chat.completions.create(
+        model="gpt-4",
+        messages=[{
+            "role": "system",
+            "content": f"""Answer using these sources:
+
+Documents:
+{doc_context}
+
+Personal context about this user:
+{memory_context}"""
+        }, {
+            "role": "user",
+            "content": query
+        }]
+    )
+    return response.choices[0].message.content
+```
+
+## Why this works
+
+| RAG alone | RAG + Velixar |
+|---|---|
+| Same answer for every user | Personalized to each user |
+| No memory of past questions | Remembers what was asked before |
+| Generic document retrieval | Documents + personal context |

@@ -1,0 +1,59 @@
+---
+title: "Add Memory to a Chatbot"
+description: "Give your chatbot persistent memory in 10 lines of code."
+---
+
+The most common Velixar use case: make your chatbot remember users across sessions.
+
+## Architecture
+
+```
+User → Your Chatbot → LLM
+                ↕
+            Velixar API
+        (store + recall memories)
+```
+
+## Implementation
+
+```python
+import requests
+import openai
+
+VELIXAR_KEY = "vlx_your_key"
+VELIXAR_URL = "https://api.velixar.ai/v1"
+headers = {"Authorization": f"Bearer {VELIXAR_KEY}"}
+
+def chat(user_id: str, message: str) -> str:
+    # 1. Recall relevant memories
+    memories = requests.get(f"{VELIXAR_URL}/memory/search",
+        headers=headers,
+        params={"q": message, "user_id": user_id, "limit": 5}
+    ).json().get("memories", [])
+
+    context = "\n".join(f"- {m['content']}" for m in memories)
+
+    # 2. Call LLM with memory context
+    response = openai.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": f"You remember this about the user:\n{context}"},
+            {"role": "user", "content": message}
+        ]
+    )
+    reply = response.choices[0].message.content
+
+    # 3. Store the exchange as a memory
+    requests.post(f"{VELIXAR_URL}/memory",
+        headers=headers,
+        json={
+            "content": f"User said: {message}\nAssistant replied: {reply[:200]}",
+            "user_id": user_id,
+            "tier": 2,
+            "type": "context"
+        })
+
+    return reply
+```
+
+That's it. Your chatbot now remembers every user across sessions.

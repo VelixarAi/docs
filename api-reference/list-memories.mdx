@@ -1,0 +1,56 @@
+---
+title: "List Memories"
+api: "GET /v1/memory/list"
+description: "List memories with pagination."
+---
+
+## Query parameters
+
+<ParamField query="user_id" type="string">
+  Filter by user ID.
+</ParamField>
+
+<ParamField query="tier" type="integer">
+  Filter by tier (0–3).
+</ParamField>
+
+<ParamField query="limit" type="integer" default="20">
+  Results per page (1–100).
+</ParamField>
+
+<ParamField query="offset" type="integer" default="0">
+  Pagination offset.
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl "https://api.velixar.ai/v1/memory/list?user_id=user_123&limit=10" \
+  -H "Authorization: Bearer vlx_your_key"
+```
+
+```python Python
+resp = requests.get("https://api.velixar.ai/v1/memory/list",
+    headers={"Authorization": "Bearer vlx_your_key"},
+    params={"user_id": "user_123", "limit": 10})
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "memories": [
+    {
+      "id": "mem_abc123",
+      "content": "User prefers dark mode and metric units",
+      "tier": 0,
+      "type": "preference",
+      "created_at": "2026-02-16T10:30:00Z"
+    }
+  ],
+  "count": 1,
+  "total": 42,
+  "offset": 0,
+  "limit": 10
+}
+```
+</ResponseExample>

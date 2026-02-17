@@ -1,0 +1,63 @@
+---
+title: "Memory Tiers"
+description: "Organize memories by importance with tiered storage."
+---
+
+Velixar uses a 4-tier system to prioritize memories during recall. Higher-priority tiers are always returned first.
+
+## Tier overview
+
+| Tier | Name | Purpose | Retention |
+|---|---|---|---|
+| **0** | Pinned | Critical facts & preferences | Permanent until deleted |
+| **1** | Session | Current session context | Expires with session |
+| **2** | Semantic | General knowledge (default) | Managed by relevance decay |
+| **3** | Organization | Shared across all users in a workspace | Permanent |
+
+## How tiers affect search
+
+When you search memories, results from lower-numbered tiers are boosted:
+
+```
+Final score = similarity_score × tier_boost
+```
+
+| Tier | Boost |
+|---|---|
+| 0 | 1.5× |
+| 1 | 1.2× |
+| 2 | 1.0× |
+| 3 | 1.1× |
+
+This means a tier-0 memory with 0.7 similarity outranks a tier-2 memory with 0.9 similarity.
+
+## Auto-tier routing
+
+When using [auto-extraction](/concepts/extraction), Velixar automatically assigns tiers based on salience:
+
+- **Salience ≥ 0.8** → Tier 0 (pinned) — high-confidence facts and preferences
+- **Salience < 0.8** → Tier 2 (semantic) — general context
+
+You can always override the tier manually via the API.
+
+## Examples
+
+```bash
+# Pin a critical preference (tier 0)
+curl -X POST https://api.velixar.ai/v1/memory \
+  -H "Authorization: Bearer vlx_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{"content": "User is allergic to peanuts", "tier": 0, "type": "fact"}'
+
+# Store session context (tier 1)
+curl -X POST https://api.velixar.ai/v1/memory \
+  -H "Authorization: Bearer vlx_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Currently debugging auth flow", "tier": 1, "type": "context"}'
+
+# Org-wide knowledge (tier 3)
+curl -X POST https://api.velixar.ai/v1/memory \
+  -H "Authorization: Bearer vlx_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{"content": "Company uses PostgreSQL for all services", "tier": 3, "type": "fact"}'
+```

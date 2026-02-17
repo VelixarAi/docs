@@ -1,0 +1,53 @@
+---
+title: "Update Memory"
+api: "PATCH /v1/memory/{id}"
+description: "Update an existing memory."
+---
+
+## Path parameters
+
+<ParamField path="id" type="string" required>
+  The memory ID to update.
+</ParamField>
+
+## Request body
+
+<ParamField body="content" type="string">
+  Updated memory content. Re-embeds the memory for search.
+</ParamField>
+
+<ParamField body="tier" type="integer">
+  Updated tier (0–3).
+</ParamField>
+
+<ParamField body="tags" type="string[]">
+  Updated tags (replaces existing).
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Updated metadata (merged with existing).
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X PATCH https://api.velixar.ai/v1/memory/mem_abc123 \
+  -H "Authorization: Bearer vlx_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{"content": "User prefers light mode now", "tier": 0}'
+```
+
+```python Python
+resp = requests.patch("https://api.velixar.ai/v1/memory/mem_abc123",
+    headers={"Authorization": "Bearer vlx_your_key"},
+    json={"content": "User prefers light mode now", "tier": 0})
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "id": "mem_abc123",
+  "updated": true
+}
+```
+</ResponseExample>

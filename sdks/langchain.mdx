@@ -1,0 +1,53 @@
+---
+title: "LangChain Integration"
+description: "Use Velixar as a drop-in memory backend for LangChain."
+---
+
+## Install
+
+```bash
+pip install velixar langchain
+```
+
+## Usage
+
+```python
+from velixar.integrations.langchain import VelixarMemory
+from langchain.chains import ConversationChain
+from langchain_openai import ChatOpenAI
+
+memory = VelixarMemory(
+    api_key="vlx_your_key",
+    user_id="user_123"
+)
+
+chain = ConversationChain(
+    llm=ChatOpenAI(model="gpt-4"),
+    memory=memory
+)
+
+# Memories are automatically stored and recalled
+response = chain.predict(input="My favorite language is Python")
+response = chain.predict(input="What's my favorite language?")
+# → "Your favorite language is Python"
+```
+
+## How it works
+
+`VelixarMemory` implements LangChain's `BaseMemory` interface:
+
+- **load_memory_variables** — Searches Velixar for memories relevant to the current input
+- **save_context** — Stores the conversation turn as a new memory
+- **clear** — Deletes all memories for the user
+
+## Configuration
+
+```python
+memory = VelixarMemory(
+    api_key="vlx_your_key",
+    user_id="user_123",
+    memory_key="history",     # Variable name in prompt (default: "history")
+    recall_limit=10,          # Max memories to recall per turn
+    auto_tier=True,           # Auto-assign tiers based on salience
+)
+```

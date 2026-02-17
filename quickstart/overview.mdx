@@ -1,0 +1,112 @@
+---
+title: "Quickstart"
+description: "Store and search your first memory in under 2 minutes."
+---
+
+## 1. Get your API key
+
+Sign up at [app.velixar.ai](https://app.velixar.ai/signup) and create an API key from **Settings → API Keys**. Keys start with `vlx_`.
+
+## 2. Store a memory
+
+<CodeGroup>
+```bash cURL
+curl -X POST https://api.velixar.ai/v1/memory \
+  -H "Authorization: Bearer vlx_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "User prefers dark mode and metric units",
+    "user_id": "user_123",
+    "tier": 0,
+    "type": "preference",
+    "tags": ["settings", "ui"]
+  }'
+```
+
+```python Python
+import requests
+
+resp = requests.post("https://api.velixar.ai/v1/memory",
+    headers={"Authorization": "Bearer vlx_your_key"},
+    json={
+        "content": "User prefers dark mode and metric units",
+        "user_id": "user_123",
+        "tier": 0,
+        "type": "preference",
+        "tags": ["settings", "ui"]
+    })
+print(resp.json())  # {"id": "mem_abc123", "stored": true}
+```
+
+```javascript JavaScript
+const resp = await fetch("https://api.velixar.ai/v1/memory", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer vlx_your_key",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    content: "User prefers dark mode and metric units",
+    user_id: "user_123",
+    tier: 0,
+    type: "preference",
+    tags: ["settings", "ui"]
+  })
+});
+console.log(await resp.json()); // {id: "mem_abc123", stored: true}
+```
+</CodeGroup>
+
+## 3. Search memories
+
+<CodeGroup>
+```bash cURL
+curl "https://api.velixar.ai/v1/memory/search?q=user%20preferences&limit=5" \
+  -H "Authorization: Bearer vlx_your_key"
+```
+
+```python Python
+resp = requests.get("https://api.velixar.ai/v1/memory/search",
+    headers={"Authorization": "Bearer vlx_your_key"},
+    params={"q": "user preferences", "limit": 5})
+for mem in resp.json()["memories"]:
+    print(f"{mem['score']:.2f} — {mem['content']}")
+```
+
+```javascript JavaScript
+const params = new URLSearchParams({ q: "user preferences", limit: "5" });
+const resp = await fetch(`https://api.velixar.ai/v1/memory/search?${params}`, {
+  headers: { "Authorization": "Bearer vlx_your_key" }
+});
+const { memories } = await resp.json();
+memories.forEach(m => console.log(`${m.score} — ${m.content}`));
+```
+</CodeGroup>
+
+**Response:**
+```json
+{
+  "memories": [
+    {
+      "id": "mem_abc123",
+      "content": "User prefers dark mode and metric units",
+      "tier": 0,
+      "type": "preference",
+      "score": 0.92,
+      "created_at": "2026-02-16T10:30:00Z"
+    }
+  ],
+  "count": 1
+}
+```
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Memory tiers" icon="layer-group" href="/concepts/tiers">
+    Learn how to organize memories by importance
+  </Card>
+  <Card title="Auto-extraction" icon="wand-magic-sparkles" href="/concepts/extraction">
+    Let Velixar extract memories from conversations automatically
+  </Card>
+</CardGroup>

@@ -1,0 +1,103 @@
+---
+title: "Store Memory"
+api: "POST /v1/memory"
+description: "Store a new memory."
+---
+
+## Request body
+
+<ParamField body="content" type="string" required>
+  The memory content. This text is embedded for semantic search.
+</ParamField>
+
+<ParamField body="user_id" type="string">
+  User ID for multi-user isolation. Memories are scoped to this user.
+</ParamField>
+
+<ParamField body="tier" type="integer" default="2">
+  Storage tier: `0` (pinned), `1` (session), `2` (semantic), `3` (organization).
+</ParamField>
+
+<ParamField body="type" type="string">
+  Memory type: `fact`, `preference`, `context`, or any custom string.
+</ParamField>
+
+<ParamField body="tags" type="string[]">
+  Tags for filtering.
+</ParamField>
+
+<ParamField body="metadata" type="object">
+  Arbitrary key-value metadata.
+</ParamField>
+
+## Response
+
+<ResponseField name="id" type="string">
+  The unique memory ID (UUID).
+</ResponseField>
+
+<ResponseField name="stored" type="boolean">
+  Whether the memory was successfully stored.
+</ResponseField>
+
+<RequestExample>
+```bash cURL
+curl -X POST https://api.velixar.ai/v1/memory \
+  -H "Authorization: Bearer vlx_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "User prefers dark mode and metric units",
+    "user_id": "user_123",
+    "tier": 0,
+    "type": "preference",
+    "tags": ["settings", "ui"]
+  }'
+```
+
+```python Python
+import requests
+
+resp = requests.post("https://api.velixar.ai/v1/memory",
+    headers={"Authorization": "Bearer vlx_your_key"},
+    json={
+        "content": "User prefers dark mode and metric units",
+        "user_id": "user_123",
+        "tier": 0,
+        "type": "preference",
+        "tags": ["settings", "ui"]
+    })
+```
+
+```javascript JavaScript
+const resp = await fetch("https://api.velixar.ai/v1/memory", {
+  method: "POST",
+  headers: {
+    "Authorization": "Bearer vlx_your_key",
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    content: "User prefers dark mode and metric units",
+    user_id: "user_123",
+    tier: 0,
+    type: "preference",
+    tags: ["settings", "ui"]
+  })
+});
+```
+</RequestExample>
+
+<ResponseExample>
+```json 200
+{
+  "id": "mem_abc123",
+  "stored": true
+}
+```
+
+```json 401
+{
+  "error": "unauthorized",
+  "message": "Invalid or missing API key"
+}
+```
+</ResponseExample>

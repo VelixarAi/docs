@@ -1,0 +1,57 @@
+---
+title: "Introduction"
+description: "Long-term memory for AI applications. Store, search, and recall context across sessions."
+---
+
+# What is Velixar?
+
+Velixar is a **memory layer for AI**. It gives your LLM-powered applications persistent, semantic memory — so they remember users, learn preferences, and retrieve relevant context automatically.
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart/overview">
+    Store your first memory in under 2 minutes
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Full endpoint documentation with examples
+  </Card>
+  <Card title="Python SDK" icon="python" href="/sdks/python">
+    pip install velixar
+  </Card>
+  <Card title="JavaScript SDK" icon="js" href="/sdks/javascript">
+    npm install velixar
+  </Card>
+</CardGroup>
+
+## Why Velixar?
+
+LLMs are stateless. Every conversation starts from zero. Velixar fixes that.
+
+| Without Velixar | With Velixar |
+|---|---|
+| User repeats preferences every session | Preferences recalled automatically |
+| No context between conversations | Full conversation history available |
+| Generic responses for every user | Personalized responses from memory |
+| Manual RAG pipeline management | Semantic search built in |
+
+## How it works
+
+<Steps>
+  <Step title="Store">
+    Send memories to the API — facts, preferences, context, decisions. Each memory is embedded and indexed for semantic search.
+  </Step>
+  <Step title="Recall">
+    Query with natural language. Velixar returns the most relevant memories ranked by semantic similarity.
+  </Step>
+  <Step title="Auto-extract">
+    Enable auto-extraction and Velixar pulls key facts from conversations automatically — no manual tagging needed.
+  </Step>
+</Steps>
+
+## Key features
+
+- **Semantic search** — Find memories by meaning, not just keywords
+- **Tiered storage** — Pin critical facts (tier 0), session context (tier 1), semantic (tier 2), org-wide (tier 3)
+- **Auto-extraction** — Automatically extract memories from conversations with deduplication
+- **Conflict resolution** — New information supersedes old, stale memories are cleaned up
+- **Multi-tenant** — Isolate memories per user, per workspace, or share across an org
+- **SDKs** — Python and JavaScript clients, plus LangChain integration

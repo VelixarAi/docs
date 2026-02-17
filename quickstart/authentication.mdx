@@ -1,0 +1,63 @@
+---
+title: "Authentication"
+description: "How to authenticate with the Velixar API."
+---
+
+## API Keys
+
+All requests require a Bearer token in the `Authorization` header:
+
+```bash
+Authorization: Bearer vlx_your_api_key_here
+```
+
+Get your key from the [Velixar Dashboard](https://app.velixar.ai/settings/api-keys).
+
+## Scopes
+
+API keys can be scoped to limit access:
+
+| Scope | Description |
+|---|---|
+| `memory:read` | Search and retrieve memories |
+| `memory:write` | Store new memories |
+| `memory:delete` | Delete memories |
+| `admin` | Full access to all operations |
+
+By default, new keys are created with `memory:read` + `memory:write`.
+
+## Rate limits
+
+Rate limits are applied per API key based on your plan:
+
+| Plan | Requests/min |
+|---|---|
+| Free | 30 |
+| Pro | 300 |
+| Power | 1,000 |
+| Teams | 2,000 |
+| Max | 5,000 |
+
+When rate limited, the API returns `429` with headers:
+
+```
+X-RateLimit-Limit: 30
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1708099260
+```
+
+## Error responses
+
+```json
+{
+  "error": "rate_limit_exceeded",
+  "message": "Rate limit exceeded. Retry after 2026-02-16T10:31:00Z",
+  "retry_after": 42
+}
+```
+
+| Code | Meaning |
+|---|---|
+| `401` | Missing or invalid API key |
+| `403` | Key lacks required scope |
+| `429` | Rate limit exceeded |

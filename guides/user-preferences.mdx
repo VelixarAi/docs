@@ -1,0 +1,75 @@
+---
+title: "Store User Preferences"
+description: "Persist and recall user preferences across sessions."
+---
+
+Use tier-0 pinned memories to store preferences that should always be recalled.
+
+## Store preferences
+
+```python
+import requests
+
+headers = {"Authorization": "Bearer vlx_your_key"}
+url = "https://api.velixar.ai/v1/memory"
+
+# Store multiple preferences
+prefs = [
+    "User prefers dark mode",
+    "User wants concise responses, no fluff",
+    "User's timezone is America/Los_Angeles",
+    "User prefers Python over JavaScript",
+]
+
+for pref in prefs:
+    requests.post(url, headers=headers, json={
+        "content": pref,
+        "user_id": "user_123",
+        "tier": 0,          # Pinned — always recalled first
+        "type": "preference"
+    })
+```
+
+## Recall at conversation start
+
+```python
+# At the start of every conversation, load user preferences
+resp = requests.get("https://api.velixar.ai/v1/memory/search",
+    headers=headers,
+    params={
+        "q": "user preferences and settings",
+        "user_id": "user_123",
+        "tiers": "0",   # Only pinned memories
+        "limit": 20
+    })
+
+prefs = [m["content"] for m in resp.json().get("memories", [])]
+system_prompt = "User preferences:\n" + "\n".join(f"- {p}" for p in prefs)
+```
+
+## Update when preferences change
+
+When a user says "actually, switch me to light mode":
+
+```python
+# Search for the old preference
+old = requests.get("https://api.velixar.ai/v1/memory/search",
+    headers=headers,
+    params={"q": "dark mode light mode theme", "user_id": "user_123", "tiers": "0"}
+).json()["memories"]
+
+# Delete old, store new
+if old:
+    requests.delete(f"https://api.velixar.ai/v1/memory/{old[0]['id']}", headers=headers)
+
+requests.post("https://api.velixar.ai/v1/memory", headers=headers, json={
+    "content": "User prefers light mode",
+    "user_id": "user_123",
+    "tier": 0,
+    "type": "preference"
+})
+```
+
+<Tip>
+  With [auto-extraction](/concepts/extraction) enabled, preference changes are detected and updated automatically — no manual code needed.
+</Tip>
