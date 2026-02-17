@@ -61,6 +61,12 @@
               "billing/usage-limits",
               "billing/overages"
             ]
+          },
+          {
+            "group": "Roadmap",
+            "pages": [
+              "roadmap"
+            ]
           }
         ]
       },

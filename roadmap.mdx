@@ -1,0 +1,63 @@
+---
+title: "Roadmap"
+description: "What's coming next for the Velixar Memory API."
+---
+
+## Coming Soon
+
+Features actively in development.
+
+<CardGroup cols={2}>
+  <Card title="Team Workspaces" icon="users">
+    Shared memory namespaces for teams. Invite members, manage permissions with RBAC, and share org-wide knowledge across your team's AI applications.
+  </Card>
+  <Card title="Webhooks & Events" icon="bell">
+    Subscribe to memory lifecycle events — new memory stored, conflict resolved, memory deleted. Push notifications to your app in real-time.
+  </Card>
+  <Card title="Memory Analytics" icon="chart-line">
+    Insights into how your memories are being used — most recalled, least accessed, storage trends, and search patterns.
+  </Card>
+  <Card title="Batch Operations" icon="layer-group">
+    Store, update, or delete memories in bulk with a single API call. Import existing knowledge bases efficiently.
+  </Card>
+</CardGroup>
+
+## Planned
+
+On the roadmap, not yet in development.
+
+<CardGroup cols={2}>
+  <Card title="Memory Expiration" icon="clock">
+    Set TTLs on memories. Session context auto-expires, while pinned facts persist forever. Fine-grained retention policies per tier.
+  </Card>
+  <Card title="Multi-modal Memories" icon="image">
+    Store and recall images, audio transcripts, and structured data alongside text memories.
+  </Card>
+  <Card title="Memory Graph" icon="diagram-project">
+    Relationship-aware memory. Link memories together — "User works at Acme" connects to "Acme uses PostgreSQL" for deeper context retrieval.
+  </Card>
+  <Card title="Self-hosted Option" icon="server">
+    Deploy Velixar in your own AWS account. Full data sovereignty with the same API and SDKs.
+  </Card>
+</CardGroup>
+
+## Shipped Recently
+
+<Steps>
+  <Step title="Auto-Extraction Pipeline">
+    Automatically extract memories from conversations with semantic dedup (cosine > 0.85), conflict resolution, and smart tier routing.
+  </Step>
+  <Step title="Stripe Metered Billing">
+    Usage-based billing with overage support. Free tier hard caps, paid tiers allow overages at $2/1K stores, $1/1K retrievals.
+  </Step>
+  <Step title="VS Code Extension">
+    Velixar memory recall directly in your editor. Available on the VS Code Marketplace.
+  </Step>
+  <Step title="Python & JavaScript SDKs">
+    Official clients on PyPI and npm with full TypeScript support.
+  </Step>
+</Steps>
+
+<Tip>
+  Want to request a feature? Join our [Discord](https://discord.gg/velixar) or email us at support@velixarai.com.
+</Tip>
