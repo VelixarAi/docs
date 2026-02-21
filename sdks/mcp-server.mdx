@@ -60,6 +60,12 @@ Add to your MCP client config:
 
 That's it — restart your MCP client and the Velixar tools will be available.
 
+## Auto-recall
+
+When the server starts, it automatically fetches your most recent memories and exposes them as an MCP resource (`velixar://memories/recent`). Clients that support resources will see this context immediately — no manual search needed.
+
+Set `VELIXAR_AUTO_RECALL` to `false` to disable, or adjust `VELIXAR_RECALL_LIMIT` to control how many memories are loaded.
+
 ## Tools
 
 The server registers 5 tools:
@@ -79,6 +85,8 @@ The server registers 5 tools:
 | `VELIXAR_API_KEY` | Yes | Your API key from [Settings → API Keys](https://velixarai.com/settings). Starts with `vlx_`. |
 | `VELIXAR_USER_ID` | No | An arbitrary label to tag memories (e.g. `kiro`, `claude`). Useful if you use multiple MCP clients and want to filter memories by source. Default: `mcp-user`. |
 | `VELIXAR_API_URL` | No | Custom API base URL. Default: `https://api.velixarai.com` |
+| `VELIXAR_AUTO_RECALL` | No | Fetch recent memories on startup. Default: `true` |
+| `VELIXAR_RECALL_LIMIT` | No | Number of memories to auto-recall. Default: `10` |
 
 ## Source
 
