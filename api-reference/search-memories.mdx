@@ -57,14 +57,17 @@ const resp = await fetch(`https://api.velixarai.com/memory/search?${params}`, {
 {
   "memories": [
     {
-      "content": "User prefers dark mode and metric units"
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "content": "User prefers dark mode and metric units",
+      "score": 0.9215,
+      "tier": 0,
+      "type": "preference",
+      "tags": ["settings", "ui"],
+      "salience": 0.85,
+      "created_at": "2026-02-16T10:30:00Z"
     }
   ],
   "count": 1
 }
 ```
 </ResponseExample>
-
-<Note>
-  Search results currently return `content` only. Use [List Memories](/api-reference/list-memories) to get full metadata including `id`, `tags`, `tier`, and timestamps.
-</Note>

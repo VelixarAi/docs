@@ -30,7 +30,7 @@ const results = await client.search({
   userId: 'user_123',
   limit: 5
 });
-results.forEach(r => console.log(r.content));
+results.forEach(r => console.log(`${r.score} — ${r.content}`));
 
 // Get
 const memory = await client.get(mem.id);

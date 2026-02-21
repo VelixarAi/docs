@@ -70,7 +70,7 @@ resp = requests.get("https://api.velixarai.com/memory/search",
     headers={"Authorization": "Bearer vlx_your_key"},
     params={"q": "user preferences", "limit": 5})
 for mem in resp.json()["memories"]:
-    print(mem["content"])
+    print(f"{mem['score']:.2f} — {mem['content']}")
 ```
 
 ```javascript JavaScript
@@ -79,7 +79,7 @@ const resp = await fetch(`https://api.velixarai.com/memory/search?${params}`, {
   headers: { "Authorization": "Bearer vlx_your_key" }
 });
 const { memories } = await resp.json();
-memories.forEach(m => console.log(m.content));
+memories.forEach(m => console.log(`${m.score} — ${m.content}`));
 ```
 </CodeGroup>
 
@@ -88,7 +88,14 @@ memories.forEach(m => console.log(m.content));
 {
   "memories": [
     {
-      "content": "User prefers dark mode and metric units"
+      "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+      "content": "User prefers dark mode and metric units",
+      "score": 0.9215,
+      "tier": 0,
+      "type": "preference",
+      "tags": ["settings", "ui"],
+      "salience": 0.85,
+      "created_at": "2026-02-16T10:30:00Z"
     }
   ],
   "count": 1

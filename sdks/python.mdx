@@ -23,7 +23,7 @@ print(mem.id)  # mem_abc123
 # Search
 results = client.search("display preferences", user_id="user_123", limit=5)
 for r in results:
-    print(r.content)
+    print(f"{r.score:.2f} — {r.content}")
 
 # Get
 memory = client.get(mem.id)
