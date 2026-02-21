@@ -2,8 +2,8 @@
   "$schema": "https://mintlify.com/schema.json",
   "name": "Velixar",
   "logo": {
-    "dark": "/images/logo-dark.png",
-    "light": "/images/logo-light.png"
+    "dark": "/images/logo-dark.svg",
+    "light": "/images/logo-light.svg"
   },
   "favicon": "/images/favicon.png",
   "colors": {
