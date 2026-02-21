@@ -3,7 +3,8 @@
   "name": "Velixar",
   "logo": {
     "dark": "/images/logo-dark.svg",
-    "light": "/images/logo-light.svg"
+    "light": "/images/logo-light.svg",
+    "href": "https://velixarai.com"
   },
   "favicon": "/images/favicon.png",
   "colors": {
