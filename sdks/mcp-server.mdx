@@ -13,6 +13,8 @@ npm install -g velixar-mcp-server
 
 ## Configure
 
+You only need your API key. Get one from [Settings → API Keys](https://velixarai.com/settings) in the Velixar dashboard.
+
 Add to your MCP client config:
 
 <CodeGroup>
@@ -22,8 +24,7 @@ Add to your MCP client config:
     "velixar": {
       "command": "velixar-mcp-server",
       "env": {
-        "VELIXAR_API_KEY": "vlx_your_key",
-        "VELIXAR_USER_ID": "your-user-id"
+        "VELIXAR_API_KEY": "vlx_your_key"
       }
     }
   }
@@ -36,8 +37,7 @@ Add to your MCP client config:
     "velixar": {
       "command": "velixar-mcp-server",
       "env": {
-        "VELIXAR_API_KEY": "vlx_your_key",
-        "VELIXAR_USER_ID": "your-user-id"
+        "VELIXAR_API_KEY": "vlx_your_key"
       }
     }
   }
@@ -50,14 +50,15 @@ Add to your MCP client config:
     "velixar": {
       "command": "velixar-mcp-server",
       "env": {
-        "VELIXAR_API_KEY": "vlx_your_key",
-        "VELIXAR_USER_ID": "your-user-id"
+        "VELIXAR_API_KEY": "vlx_your_key"
       }
     }
   }
 }
 ```
 </CodeGroup>
+
+That's it — restart your MCP client and the Velixar tools will be available.
 
 ## Tools
 
@@ -75,9 +76,9 @@ The server registers 5 tools:
 
 | Variable | Required | Description |
 |---|---|---|
-| `VELIXAR_API_KEY` | Yes | Your API key (starts with `vlx_`) |
-| `VELIXAR_USER_ID` | No | User ID for memory isolation (default: `mcp-user`) |
-| `VELIXAR_API_URL` | No | Custom API base URL (default: `https://api.velixarai.com`) |
+| `VELIXAR_API_KEY` | Yes | Your API key from [Settings → API Keys](https://velixarai.com/settings). Starts with `vlx_`. |
+| `VELIXAR_USER_ID` | No | An arbitrary label to tag memories (e.g. `kiro`, `claude`). Useful if you use multiple MCP clients and want to filter memories by source. Default: `mcp-user`. |
+| `VELIXAR_API_URL` | No | Custom API base URL. Default: `https://api.velixarai.com` |
 
 ## Source
 
