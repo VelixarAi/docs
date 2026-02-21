@@ -30,7 +30,7 @@ const results = await client.search({
   userId: 'user_123',
   limit: 5
 });
-results.forEach(r => console.log(`${r.score} — ${r.content}`));
+results.forEach(r => console.log(r.content));
 
 // Get
 const memory = await client.get(mem.id);
@@ -44,7 +44,7 @@ await client.delete(mem.id);
 ```javascript
 const client = new Velixar({
   apiKey: 'vlx_your_key',
-  baseUrl: 'https://api.velixar.ai/v1', // default
+  baseUrl: 'https://api.velixarai.com', // default
   timeout: 30000,                         // ms
 });
 ```
@@ -64,4 +64,4 @@ const results: SearchResult[] = await client.search({
 
 ## Source
 
-[github.com/VelixarAIInc/velixar-js](https://github.com/VelixarAIInc/velixar-js)
+[github.com/VelixarAi/velixar-js](https://github.com/VelixarAi/velixar-js)

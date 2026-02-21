@@ -7,7 +7,7 @@ description: "Long-term memory for AI applications. Store, search, and recall co
 
 Velixar is a **memory layer for AI**. It gives your LLM-powered applications persistent, semantic memory — so they remember users, learn preferences, and retrieve relevant context automatically.
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="Quickstart" icon="rocket" href="/quickstart/overview">
     Store your first memory in under 2 minutes
   </Card>
@@ -19,6 +19,12 @@ Velixar is a **memory layer for AI**. It gives your LLM-powered applications per
   </Card>
   <Card title="JavaScript SDK" icon="js" href="/sdks/javascript">
     npm install velixar
+  </Card>
+  <Card title="MCP Server" icon="plug" href="/sdks/mcp-server">
+    Use Velixar from Claude, Kiro, or Cursor
+  </Card>
+  <Card title="CLI" icon="terminal" href="/sdks/cli">
+    pip install velixar-cli
   </Card>
 </CardGroup>
 
@@ -54,4 +60,4 @@ LLMs are stateless. Every conversation starts from zero. Velixar fixes that.
 - **Auto-extraction** — Automatically extract memories from conversations with deduplication
 - **Conflict resolution** — New information supersedes old, stale memories are cleaned up
 - **Multi-tenant** — Isolate memories per user, per workspace, or share across an org
-- **SDKs** — Python and JavaScript clients, plus LangChain integration
+- **SDKs** — Python, JavaScript, CLI, MCP server, plus LangChain integration

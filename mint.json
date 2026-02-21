@@ -18,12 +18,12 @@
   "topbarLinks": [
     {
       "name": "Dashboard",
-      "url": "https://app.velixar.ai"
+      "url": "https://velixarai.com"
     }
   ],
   "topbarCtaButton": {
     "name": "Get API Key",
-    "url": "https://app.velixar.ai/settings/api-keys"
+    "url": "https://velixarai.com/settings/api-keys"
   },
   "tabs": [
     {
@@ -87,19 +87,21 @@
         "sdks/overview",
         "sdks/python",
         "sdks/javascript",
-        "sdks/langchain"
+        "sdks/langchain",
+        "sdks/mcp-server",
+        "sdks/cli"
       ]
     }
   ],
   "footerSocials": {
-    "github": "https://github.com/VelixarAIInc",
+    "github": "https://github.com/VelixarAi",
     "discord": "https://discord.gg/velixar"
   },
   "feedback": {
     "thumbsRating": true
   },
   "api": {
-    "baseUrl": "https://api.velixar.ai",
+    "baseUrl": "https://api.velixarai.com",
     "auth": {
       "method": "bearer",
       "name": "Authorization"

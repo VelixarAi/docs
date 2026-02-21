@@ -23,7 +23,7 @@ print(mem.id)  # mem_abc123
 # Search
 results = client.search("display preferences", user_id="user_123", limit=5)
 for r in results:
-    print(f"{r.score:.2f} — {r.content}")
+    print(r.content)
 
 # Get
 memory = client.get(mem.id)
@@ -37,7 +37,7 @@ client.delete(mem.id)
 ```python
 client = Velixar(
     api_key="vlx_your_key",
-    base_url="https://api.velixar.ai/v1",  # default
+    base_url="https://api.velixarai.com",  # default
     timeout=30,                              # seconds
 )
 ```
@@ -68,4 +68,4 @@ results = client.search(
 
 ## Source
 
-[github.com/VelixarAIInc/velixar-python](https://github.com/VelixarAIInc/velixar-python)
+[github.com/VelixarAi/velixar-python](https://github.com/VelixarAi/velixar-python)

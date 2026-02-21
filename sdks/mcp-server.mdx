@@ -1,0 +1,84 @@
+---
+title: "MCP Server"
+description: "Use Velixar memory from any MCP-compatible AI assistant."
+---
+
+The Velixar MCP server exposes your memory API as [Model Context Protocol](https://modelcontextprotocol.io) tools — letting Claude Desktop, Kiro, Cursor, and other MCP clients store and search memories natively.
+
+## Install
+
+```bash
+npm install -g velixar-mcp-server
+```
+
+## Configure
+
+Add to your MCP client config:
+
+<CodeGroup>
+```json Kiro (~/.kiro/settings/mcp.json)
+{
+  "mcpServers": {
+    "velixar": {
+      "command": "velixar-mcp-server",
+      "env": {
+        "VELIXAR_API_KEY": "vlx_your_key",
+        "VELIXAR_USER_ID": "your-user-id"
+      }
+    }
+  }
+}
+```
+
+```json Claude Desktop
+{
+  "mcpServers": {
+    "velixar": {
+      "command": "velixar-mcp-server",
+      "env": {
+        "VELIXAR_API_KEY": "vlx_your_key",
+        "VELIXAR_USER_ID": "your-user-id"
+      }
+    }
+  }
+}
+```
+
+```json Cursor
+{
+  "mcpServers": {
+    "velixar": {
+      "command": "velixar-mcp-server",
+      "env": {
+        "VELIXAR_API_KEY": "vlx_your_key",
+        "VELIXAR_USER_ID": "your-user-id"
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+## Tools
+
+The server registers 5 tools:
+
+| Tool | Description |
+|---|---|
+| `velixar_store` | Store a memory with content, tags, tier, and type |
+| `velixar_search` | Semantic search across memories |
+| `velixar_list` | List memories with pagination (returns full metadata including IDs) |
+| `velixar_update` | Update an existing memory by ID |
+| `velixar_delete` | Delete a memory by ID |
+
+## Environment variables
+
+| Variable | Required | Description |
+|---|---|---|
+| `VELIXAR_API_KEY` | Yes | Your API key (starts with `vlx_`) |
+| `VELIXAR_USER_ID` | No | User ID for memory isolation (default: `mcp-user`) |
+| `VELIXAR_API_URL` | No | Custom API base URL (default: `https://api.velixarai.com`) |
+
+## Source
+
+[github.com/VelixarAi/velixar-mcp-server](https://github.com/VelixarAi/velixar-mcp-server)

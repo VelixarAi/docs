@@ -34,19 +34,19 @@ description: "Search memories using semantic similarity."
 
 <RequestExample>
 ```bash cURL
-curl "https://api.velixar.ai/v1/memory/search?q=user%20preferences&limit=5" \
+curl "https://api.velixarai.com/memory/search?q=user%20preferences&limit=5" \
   -H "Authorization: Bearer vlx_your_key"
 ```
 
 ```python Python
-resp = requests.get("https://api.velixar.ai/v1/memory/search",
+resp = requests.get("https://api.velixarai.com/memory/search",
     headers={"Authorization": "Bearer vlx_your_key"},
     params={"q": "user preferences", "limit": 5})
 ```
 
 ```javascript JavaScript
 const params = new URLSearchParams({ q: "user preferences", limit: "5" });
-const resp = await fetch(`https://api.velixar.ai/v1/memory/search?${params}`, {
+const resp = await fetch(`https://api.velixarai.com/memory/search?${params}`, {
   headers: { "Authorization": "Bearer vlx_your_key" }
 });
 ```
@@ -57,16 +57,14 @@ const resp = await fetch(`https://api.velixar.ai/v1/memory/search?${params}`, {
 {
   "memories": [
     {
-      "id": "mem_abc123",
-      "content": "User prefers dark mode and metric units",
-      "tier": 0,
-      "type": "preference",
-      "score": 0.92,
-      "tags": ["settings", "ui"],
-      "created_at": "2026-02-16T10:30:00Z"
+      "content": "User prefers dark mode and metric units"
     }
   ],
   "count": 1
 }
 ```
 </ResponseExample>
+
+<Note>
+  Search results currently return `content` only. Use [List Memories](/api-reference/list-memories) to get full metadata including `id`, `tags`, `tier`, and timestamps.
+</Note>

@@ -1,0 +1,54 @@
+---
+title: "CLI"
+description: "Manage Velixar memories from the command line."
+---
+
+## Install
+
+```bash
+pip install velixar-cli
+```
+
+## Authenticate
+
+```bash
+velixar auth --key vlx_your_key
+```
+
+This stores your key locally. All subsequent commands use it automatically.
+
+## Commands
+
+```bash
+# Store a memory
+velixar store "User prefers dark mode" --tier 0 --tags settings,ui
+
+# Search memories
+velixar search "user preferences" --limit 5
+
+# List memories
+velixar list --limit 10
+
+# Get a specific memory
+velixar get <memory_id>
+
+# Update a memory
+velixar update <memory_id> --content "Updated content"
+
+# Delete a memory
+velixar delete <memory_id>
+
+# Health check
+velixar health
+
+# Interactive mode
+velixar interactive
+```
+
+## Interactive mode
+
+Run `velixar interactive` for a REPL where you can store, search, and manage memories conversationally.
+
+## Source
+
+[github.com/VelixarAi/velixar-cli](https://github.com/VelixarAi/velixar-cli)
