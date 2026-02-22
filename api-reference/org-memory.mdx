@@ -1,0 +1,167 @@
+---
+title: "Org Memory API"
+description: "Team and organization-scoped memory sharing endpoints"
+---
+
+## Overview
+
+The Org Memory API enables hierarchical knowledge sharing across teams and organizations. Memories flow through four scopes:
+
+**Personal → Workspace/Team → Org**
+
+All requests require a valid Supabase JWT in the `Authorization: Bearer <token>` header.
+
+**Base URL:** `https://api.velixarai.com/v1/org/memory`
+
+---
+
+## Commit Memory
+
+Share a memory with your team workspace.
+
+<ParamField body="content" type="string" required>
+  The memory content to commit
+</ParamField>
+
+<ParamField body="workspace_id" type="string" required>
+  Your org_workspace ID
+</ParamField>
+
+<ParamField body="team_id" type="string" required>
+  Your team ID
+</ParamField>
+
+<ParamField body="tags" type="string[]">
+  Optional tags for categorization
+</ParamField>
+
+```bash
+curl -X POST https://api.velixarai.com/v1/org/memory/commit \
+  -H "Authorization: Bearer $SUPABASE_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Our API rate limit is 1000 req/min for Pro users",
+    "workspace_id": "ws_abc123",
+    "team_id": "team_xyz",
+    "tags": ["api", "rate-limits"]
+  }'
+```
+
+**Response:** The created `org_memory` record with `scope: "workspace"`.
+
+---
+
+## Submit for Promotion
+
+Request that a team memory be promoted to org-wide visibility. Requires manager/admin approval.
+
+<ParamField body="memory_id" type="string" required>
+  The memory to submit for promotion
+</ParamField>
+
+<ParamField body="team_id" type="string" required>
+  The team the memory belongs to
+</ParamField>
+
+```bash
+curl -X POST https://api.velixarai.com/v1/org/memory/submit \
+  -H "Authorization: Bearer $SUPABASE_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{"memory_id": "mem_abc", "team_id": "team_xyz"}'
+```
+
+---
+
+## Promote to Org
+
+**Requires:** `manager` or `admin` role.
+
+Promotes a team memory to organization scope, making it visible to all teams.
+
+<ParamField body="memory_id" type="string" required>
+  The memory to promote
+</ParamField>
+
+<ParamField body="org_id" type="string" required>
+  The organization ID
+</ParamField>
+
+```bash
+curl -X POST https://api.velixarai.com/v1/org/memory/promote \
+  -H "Authorization: Bearer $SUPABASE_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{"memory_id": "mem_abc", "org_id": "org_xyz"}'
+```
+
+---
+
+## Get Promotion Queue
+
+**Requires:** `manager` or `admin` role.
+
+Returns pending promotion requests for your team.
+
+<ParamField query="team_id" type="string">
+  Filter by team (defaults to your primary team)
+</ParamField>
+
+```bash
+curl https://api.velixarai.com/v1/org/memory/queue?team_id=team_xyz \
+  -H "Authorization: Bearer $SUPABASE_JWT"
+```
+
+---
+
+## Retrieve Memories
+
+Search across all scopes you have access to (personal + team + org). Supports semantic vector search.
+
+<ParamField body="query" type="string">
+  Natural language search query. If omitted, returns recent memories.
+</ParamField>
+
+<ParamField body="limit" type="integer" default="20">
+  Max results to return
+</ParamField>
+
+```bash
+curl -X POST https://api.velixarai.com/v1/org/memory/retrieve \
+  -H "Authorization: Bearer $SUPABASE_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "rate limiting policy", "limit": 10}'
+```
+
+**Response:**
+```json
+{
+  "memories": [
+    {
+      "id": "mem_abc",
+      "content": "Our API rate limit is 1000 req/min for Pro users",
+      "scope": "org",
+      "relevance_score": 0.92,
+      "tags": ["api", "rate-limits"],
+      "created_at": "2026-02-21T..."
+    }
+  ],
+  "scopes_queried": 3
+}
+```
+
+---
+
+## Scope Hierarchy
+
+| Scope | Visibility | Who can write |
+|-------|-----------|---------------|
+| `personal` | Only you | Any authenticated user |
+| `workspace` | Your team | Team members |
+| `org` | All teams in org | Promoted by manager/admin |
+
+## Roles
+
+| Role | Commit | Submit for Promotion | Promote | View Queue |
+|------|--------|---------------------|---------|------------|
+| `member` | ✅ | ✅ | ❌ | ❌ |
+| `manager` | ✅ | ✅ | ✅ | ✅ |
+| `admin` | ✅ | ✅ | ✅ | ✅ |

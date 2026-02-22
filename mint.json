@@ -79,6 +79,7 @@
         "api-reference/list-memories",
         "api-reference/update-memory",
         "api-reference/delete-memory",
+        "api-reference/org-memory",
         "api-reference/health"
       ]
     },
