@@ -50,6 +50,7 @@
       "pages": [
         "concepts/memories",
         "concepts/tiers",
+        "concepts/org-memory",
         "concepts/extraction"
       ]
     },

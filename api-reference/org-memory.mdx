@@ -1,15 +1,15 @@
 ---
 title: "Org Memory API"
-description: "Team and organization-scoped memory sharing endpoints"
+description: "Team and organization-scoped memory sharing with semantic search, audit trails, and automatic vector embedding."
 ---
 
 ## Overview
 
-The Org Memory API enables hierarchical knowledge sharing across teams and organizations. Memories flow through four scopes:
+The Org Memory API enables hierarchical knowledge sharing across teams and organizations. Memories flow through scoped tiers with automatic vector embedding and audit logging.
 
-**Personal → Workspace/Team → Org**
+**Scope flow:** `Personal → Workspace → Team → Org`
 
-All requests require a valid Supabase JWT in the `Authorization: Bearer <token>` header.
+All endpoints (except `/embed`) require a valid Supabase JWT in the `Authorization: Bearer <token>` header.
 
 **Base URL:** `https://api.velixarai.com/v1/org/memory`
 
@@ -17,22 +17,26 @@ All requests require a valid Supabase JWT in the `Authorization: Bearer <token>`
 
 ## Commit Memory
 
-Share a memory with your team workspace.
+Share a memory with your team workspace. Automatically generates a vector embedding and stores it in Qdrant.
 
 <ParamField body="content" type="string" required>
-  The memory content to commit
+  The memory content to commit (this gets embedded for semantic search)
 </ParamField>
 
-<ParamField body="workspace_id" type="string" required>
-  Your org_workspace ID
+<ParamField body="workspace_id" type="string">
+  Your org_workspace ID. Defaults to your membership's workspace.
 </ParamField>
 
-<ParamField body="team_id" type="string" required>
-  Your team ID
+<ParamField body="team_id" type="string">
+  Your team ID. Defaults to your membership's team.
 </ParamField>
 
 <ParamField body="tags" type="string[]">
   Optional tags for categorization
+</ParamField>
+
+<ParamField body="source_memory_id" type="string">
+  Optional — the personal memory ID this was promoted from
 </ParamField>
 
 ```bash
@@ -41,19 +45,22 @@ curl -X POST https://api.velixarai.com/v1/org/memory/commit \
   -H "Content-Type: application/json" \
   -d '{
     "content": "Our API rate limit is 1000 req/min for Pro users",
-    "workspace_id": "ws_abc123",
     "team_id": "team_xyz",
     "tags": ["api", "rate-limits"]
   }'
 ```
 
-**Response:** The created `org_memory` record with `scope: "workspace"`.
+**Response:** The created `org_memory` record with `scope: "workspace"` and a `qdrant_point_id`.
+
+<Note>
+  If `workspace_id` or `team_id` are omitted, they're resolved from your membership record.
+</Note>
 
 ---
 
 ## Submit for Promotion
 
-Request that a team memory be promoted to org-wide visibility. Requires manager/admin approval.
+Request that a team memory be promoted to org-wide visibility. Creates an entry in the promotion queue for manager/admin review.
 
 <ParamField body="memory_id" type="string" required>
   The memory to submit for promotion
@@ -74,9 +81,9 @@ curl -X POST https://api.velixarai.com/v1/org/memory/submit \
 
 ## Promote to Org
 
-**Requires:** `manager` or `admin` role.
+<Warning>Requires `manager` or `admin` role.</Warning>
 
-Promotes a team memory to organization scope, making it visible to all teams.
+Promotes a team memory to organization scope. The memory is re-embedded into the org-level Qdrant collection, making it searchable by all teams.
 
 <ParamField body="memory_id" type="string" required>
   The memory to promote
@@ -97,7 +104,7 @@ curl -X POST https://api.velixarai.com/v1/org/memory/promote \
 
 ## Get Promotion Queue
 
-**Requires:** `manager` or `admin` role.
+<Warning>Requires `manager` or `admin` role.</Warning>
 
 Returns pending promotion requests for your team.
 
@@ -114,7 +121,7 @@ curl https://api.velixarai.com/v1/org/memory/queue?team_id=team_xyz \
 
 ## Retrieve Memories
 
-Search across all scopes you have access to (personal + team + org). Supports semantic vector search.
+Semantic vector search across all scopes you have access to. Queries all your team and org collections in parallel, then merges and ranks by cosine similarity.
 
 <ParamField body="query" type="string">
   Natural language search query. If omitted, returns recent memories.
@@ -141,6 +148,9 @@ curl -X POST https://api.velixarai.com/v1/org/memory/retrieve \
       "scope": "org",
       "relevance_score": 0.92,
       "tags": ["api", "rate-limits"],
+      "committed_by": "user_123",
+      "access_count": 5,
+      "qdrant_point_id": "235e7a30-...",
       "created_at": "2026-02-21T..."
     }
   ],
@@ -148,20 +158,81 @@ curl -X POST https://api.velixarai.com/v1/org/memory/retrieve \
 }
 ```
 
+<Info>
+  The retrieve endpoint automatically searches all scopes your membership grants access to: personal, team(s), and org. Results are deduplicated and ranked by relevance score.
+</Info>
+
+---
+
+## Embedding Pipeline
+
+Memory embedding happens automatically via a Postgres trigger → Edge Function → Lambda pipeline:
+
+<Steps>
+  <Step title="Insert">
+    A memory is inserted into `org_memories` (via commit, promote, or direct insert).
+  </Step>
+  <Step title="Trigger">
+    Postgres trigger `trg_embed_org_memory` fires and calls the `embed-org-memory` edge function.
+  </Step>
+  <Step title="Edge Function">
+    The edge function calls the Lambda `/embed` endpoint with a shared secret (`X-Embed-Key` header).
+  </Step>
+  <Step title="Lambda">
+    The Lambda validates the secret, verifies the memory exists, generates an OpenAI `text-embedding-3-small` vector (1536 dimensions), and stores it in Qdrant.
+  </Step>
+  <Step title="Update">
+    The `qdrant_point_id` is written back to the `org_memories` row, confirming the embedding is searchable.
+  </Step>
+</Steps>
+
+The `/embed` endpoint is not user-facing — it uses a shared secret instead of JWT auth.
+
+---
+
+## Audit Log
+
+All org memory operations are automatically logged to the `org_audit_log` table via database triggers.
+
+**Auto-logged actions:**
+| Action | Trigger |
+|--------|---------|
+| `memory.commit` | Memory inserted into `org_memories` |
+| `memory.delete` | Memory deleted from `org_memories` |
+| `promotion.approve` / `promotion.reject` | Promotion queue status change |
+| `member.invite` / `member.remove` | Manual logging from dashboard |
+
+Each audit entry includes: `actor_id`, `org_id`, `team_id`, `target_type`, `target_id`, and a `metadata` JSONB field with context (scope, content preview, email, role).
+
+<Warning>
+  The audit log tab in the dashboard is only visible to managers and admins.
+</Warning>
+
 ---
 
 ## Scope Hierarchy
 
-| Scope | Visibility | Who can write |
-|-------|-----------|---------------|
-| `personal` | Only you | Any authenticated user |
-| `workspace` | Your team | Team members |
-| `org` | All teams in org | Promoted by manager/admin |
+| Scope | Visibility | Who can write | Qdrant Collection |
+|-------|-----------|---------------|-------------------|
+| `personal` | Only you | Any authenticated user | `personal_{user_id}` |
+| `workspace` | Your team | Team members | `team_{team_id}` |
+| `org` | All teams in org | Promoted by manager/admin | `org_{org_id}` |
 
-## Roles
+## Roles & Permissions
 
-| Role | Commit | Submit for Promotion | Promote | View Queue |
-|------|--------|---------------------|---------|------------|
-| `member` | ✅ | ✅ | ❌ | ❌ |
-| `manager` | ✅ | ✅ | ✅ | ✅ |
-| `admin` | ✅ | ✅ | ✅ | ✅ |
+| Role | Commit | Submit for Promotion | Promote | View Queue | View Audit Log |
+|------|--------|---------------------|---------|------------|----------------|
+| `member` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `manager` | ✅ | ✅ | ✅ | ✅ | ✅ |
+| `admin` | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+## Security
+
+The org memory system uses a 6-layer security model:
+
+1. **API Gateway JWT Authorizer** — Supabase JWT validated on all `/org/memory/*` routes (except `/embed`)
+2. **Lambda Membership Check** — User must have an active membership to access any org data
+3. **Role-Based Access Control** — Promote/queue/audit restricted to manager/admin roles
+4. **Row-Level Security** — Supabase RLS policies ensure users only see their own org's data
+5. **Embed Secret** — The `/embed` endpoint validates a shared secret from Secrets Manager
+6. **Memory Existence Check** — The embed Lambda verifies the `memory_id` exists before creating vectors

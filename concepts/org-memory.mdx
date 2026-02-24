@@ -1,0 +1,87 @@
+---
+title: "Org Memory"
+description: "How organization-scoped memory sharing works across teams."
+---
+
+Org Memory extends Velixar's personal memory system to teams and organizations. Instead of memories being siloed per-user, teams can share knowledge that persists across all members.
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│                Organization                  │
+│  ┌─────────────┐  ┌─────────────┐           │
+│  │   Team A    │  │   Team B    │           │
+│  │ ┌─────────┐ │  │ ┌─────────┐ │           │
+│  │ │Workspace│ │  │ │Workspace│ │           │
+│  │ └─────────┘ │  │ └─────────┘ │           │
+│  └─────────────┘  └─────────────┘           │
+└─────────────────────────────────────────────┘
+```
+
+**Organizations** contain **teams**, which contain **workspaces**. Each level has its own memory scope.
+
+## Scope Model
+
+Memories flow upward through promotion:
+
+| Scope | Created by | Visible to | Promotion |
+|-------|-----------|------------|-----------|
+| `workspace` | Any team member via commit | Team members | Submit → manager approves |
+| `org` | Manager/admin promotes | All teams in org | Final scope |
+
+A typical flow:
+1. Developer commits a memory to their team workspace ("Our auth tokens expire after 24h")
+2. Team lead submits it for promotion
+3. Org admin approves — now all teams can search for it
+
+## Vector Storage
+
+Each scope maps to a separate Qdrant collection:
+
+- `team_{team_id}` — workspace and team-scoped memories
+- `org_{org_id}` — promoted org-wide memories
+
+When you search via `/retrieve`, all collections you have access to are queried in parallel. Results are merged, deduplicated, and ranked by cosine similarity.
+
+Embeddings use OpenAI `text-embedding-3-small` (1536 dimensions) and are generated automatically when memories are committed or promoted.
+
+## Database Schema
+
+The org memory system uses 6 tables in Supabase:
+
+| Table | Purpose |
+|-------|---------|
+| `organizations` | Org metadata, owner, plan |
+| `teams` | Teams within an org |
+| `org_workspaces` | Workspaces within teams |
+| `memberships` | User ↔ org/team/workspace mapping + role |
+| `org_memories` | The memories themselves (content, scope, tags, qdrant_point_id) |
+| `promotion_queue` | Pending promotion requests |
+| `org_audit_log` | Immutable audit trail of all org memory operations |
+
+All tables have Row-Level Security (RLS) policies — users can only access data within their own organization.
+
+## Audit Trail
+
+Every org memory operation is automatically logged:
+
+- **memory.commit** — logged by Postgres trigger on insert
+- **memory.delete** — logged by Postgres trigger on delete
+- **promotion.approve / promotion.reject** — logged by trigger on queue status change
+- **member.invite / member.remove** — logged by the dashboard
+
+The audit log is visible to managers and admins in the Org Dashboard.
+
+## Usage Limits
+
+Org memory counts toward your plan's memory limits:
+
+| Plan | Org Memory Limit |
+|------|-----------------|
+| Free | 100 total |
+| Pro | 10,000 |
+| Power | 250,000 |
+| Team | 5,000 per seat |
+
+See [billing plans](/billing/plans) for details.
