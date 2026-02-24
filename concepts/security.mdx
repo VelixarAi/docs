@@ -1,0 +1,131 @@
+---
+title: "Security"
+description: "How Velixar protects your data — defense in depth, audit trails, and observability."
+---
+
+Memory is sensitive data. Velixar treats security as a core product feature, not an afterthought.
+
+## Defense in Depth
+
+Velixar uses a **6-layer security model** — every request passes through multiple independent validation gates before touching any data.
+
+```
+Request
+  │
+  ▼
+┌─────────────────────────────────┐
+│ Layer 1: Gateway Authentication │  JWT or API key validation
+├─────────────────────────────────┤
+│ Layer 2: Rate Limiting          │  Per-user, tier-aware throttling
+├─────────────────────────────────┤
+│ Layer 3: Membership Validation  │  Org/team membership verified
+├─────────────────────────────────┤
+│ Layer 4: Role-Based Access      │  Action scoped to user's role
+├─────────────────────────────────┤
+│ Layer 5: Row-Level Security     │  Database enforces data isolation
+├─────────────────────────────────┤
+│ Layer 6: Resource Verification  │  Target resource existence check
+└─────────────────────────────────┘
+```
+
+A request that fails at any layer is rejected immediately — no partial access, no fallthrough.
+
+## Authentication
+
+Velixar supports two authentication methods depending on the endpoint:
+
+| Method | Used by | Format |
+|--------|---------|--------|
+| API Key | Personal memory API (`/memory/*`) | `Authorization: Bearer vlx_...` |
+| JWT | Org memory API, dashboard | `Authorization: Bearer <supabase_jwt>` |
+
+API keys are scoped to a single user and can be rotated from the dashboard. JWTs are short-lived and validated against the identity provider on every request.
+
+## Rate Limiting
+
+Every API key and user is subject to tier-aware rate limits:
+
+| Plan | Memories / month | Retrievals / month |
+|------|------------------|--------------------|
+| Free | 100 | 500 |
+| Pro | 10,000 | 250,000 |
+| Power | 250,000 | 1,000,000 |
+| Team | 5,000 / seat | 100,000 / seat |
+
+Rate limits are tracked in a persistent cache. If the cache is temporarily unavailable, the system falls back to per-instance tracking rather than disabling limits — **rate limiting never fails open**.
+
+Exceeding your limit returns `429 Too Many Requests` with a `Retry-After` header.
+
+## Data Isolation
+
+### Personal Memories
+Each user's memories are isolated by `user_id` at both the API and database layers. There is no API surface to access another user's personal memories.
+
+### Org Memories
+Org data is isolated at multiple levels:
+
+- **Database**: Row-Level Security (RLS) policies enforce that queries only return data within the user's organization
+- **Vector Store**: Each team and organization has its own vector collection — there is no shared index
+- **API**: Membership is verified on every request before any data is returned
+
+<Info>
+  Even if a valid JWT is presented, the user must have an active membership record to access any org data. Removing a user from the org immediately revokes access.
+</Info>
+
+## Audit Logging
+
+All org memory operations are recorded in an immutable audit log:
+
+- **Memory commits** — who committed what, to which scope
+- **Memory deletions** — who deleted what, with content preview
+- **Promotions** — who approved or rejected, with before/after scope
+- **Member changes** — invites and removals with role metadata
+
+Audit entries include the actor, timestamp, target resource, and contextual metadata. The audit log is append-only — entries cannot be modified or deleted by any user, including admins.
+
+<Warning>
+  Audit log access is restricted to managers and admins. Regular members cannot view the audit trail.
+</Warning>
+
+## System-to-System Security
+
+Internal system operations (like the embedding pipeline) use dedicated shared secrets stored in a managed secrets service. These endpoints:
+
+- Are not exposed to end users
+- Validate a secret header on every invocation
+- Verify the target resource exists before performing any operation
+- Cannot be called with user-facing credentials
+
+## Observability
+
+Velixar provides security observability through multiple channels:
+
+| Signal | What it covers |
+|--------|---------------|
+| **Audit Log** | All org memory mutations with actor attribution |
+| **Access Tracking** | Per-memory access count and last-accessed timestamp |
+| **Rate Limit Metrics** | Per-user consumption against plan limits |
+| **API Usage Dashboard** | Real-time view of memory and retrieval usage by tier |
+| **Error Monitoring** | Application-level error tracking with session replay |
+| **Web Analytics** | Dashboard and docs usage patterns |
+
+The API Usage page in the dashboard shows your current consumption against plan limits in real time, with breakdowns by operation type.
+
+## Credential Management
+
+- API keys and secrets are stored in a managed secrets service with encryption at rest
+- No credentials are hardcoded in application code
+- Database credentials use service-role keys that are never exposed to the client
+- JWT signing keys are managed by the identity provider
+
+## Infrastructure Security
+
+- All traffic is encrypted in transit (TLS)
+- The API runs on serverless compute with no persistent attack surface
+- Static assets are served through a CDN with edge caching
+- Database connections use SSL with certificate verification
+- Vector store connections are authenticated with API keys over HTTPS
+
+## Reporting Vulnerabilities
+
+If you discover a security issue, please email **security@velixarai.com**. We take all reports seriously and will respond within 48 hours.

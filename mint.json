@@ -51,7 +51,9 @@
         "concepts/memories",
         "concepts/tiers",
         "concepts/org-memory",
-        "concepts/extraction"
+        "concepts/extraction",
+        "concepts/architecture",
+        "concepts/security"
       ]
     },
     {

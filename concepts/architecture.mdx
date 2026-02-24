@@ -1,0 +1,80 @@
+---
+title: "Architecture"
+description: "How Velixar is built — infrastructure, data flow, and design principles."
+---
+
+Velixar is a cloud-native memory platform built on AWS, designed for low-latency semantic recall at scale.
+
+## High-Level Architecture
+
+```
+┌──────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│  Your App    │────▶│  API Gateway     │────▶│  Compute Layer  │
+│  (SDK/MCP/   │     │  (Auth + Rate    │     │  (Serverless)   │
+│   cURL)      │     │   Limiting)      │     │                 │
+└──────────────┘     └──────────────────┘     └────────┬────────┘
+                                                       │
+                              ┌─────────────────────────┼──────────────────────┐
+                              │                         │                      │
+                     ┌────────▼────────┐   ┌────────────▼──────┐   ┌──────────▼──────┐
+                     │  Vector Store   │   │  Relational DB    │   │  Cache Layer    │
+                     │  (Embeddings +  │   │  (Metadata, Auth, │   │  (Rate Limits,  │
+                     │   Similarity)   │   │   Audit Trails)   │   │   Sessions)     │
+                     └─────────────────┘   └───────────────────┘   └─────────────────┘
+```
+
+## Design Principles
+
+- **Serverless-first** — No idle infrastructure. Compute scales to zero and up to thousands of concurrent requests automatically.
+- **Multi-tenant isolation** — Every user's data is logically isolated at the database, vector store, and API layers. Org memory uses separate vector collections per team and organization.
+- **Semantic by default** — Every memory is embedded on write. Search is always vector-based, not keyword matching.
+- **Event-driven** — Embedding, backups, and sync operations are triggered by database events, not polling.
+
+## Data Flow
+
+### Store
+
+1. Your app sends a memory to the API
+2. Request is authenticated and rate-limited at the gateway
+3. The memory is persisted to the relational store
+4. A vector embedding is generated and stored in the vector index
+5. Response returns with the memory ID
+
+### Recall
+
+1. Your app sends a natural language query
+2. The query is embedded into the same vector space
+3. Cosine similarity search runs across all accessible collections
+4. Results are ranked, deduplicated, and enriched with metadata
+5. Top matches are returned with relevance scores
+
+### Org Memory
+
+Org memories follow an event-driven pipeline:
+
+1. Memory is committed to a team workspace
+2. A database trigger fires asynchronously
+3. The embedding is generated and stored in the team's vector collection
+4. When promoted to org scope, the memory is re-embedded into the org-level collection
+5. All operations are audit-logged automatically
+
+## Infrastructure
+
+| Component | Purpose |
+|-----------|---------|
+| API Gateway | Request routing, authentication, rate limiting |
+| Serverless Compute | Stateless request handling, embedding generation |
+| Vector Database | High-dimensional similarity search with collection-level isolation |
+| Relational Database | Memory metadata, user data, org structure, audit logs |
+| Cache | Per-user rate limit tracking, session state |
+| Object Storage | Static assets, backups |
+| CDN | Global edge delivery for the dashboard and docs |
+| Secrets Manager | Credential storage with rotation support |
+| Scheduled Jobs | Daily vector store backups, document sync |
+
+## Reliability
+
+- **Daily automated backups** of all vector collections
+- **Hourly document sync** for connected integrations
+- **Cold start optimization** — Lambda layers pre-package dependencies for sub-second warm-up
+- **Graceful degradation** — If the cache layer is unavailable, rate limiting falls back to per-instance tracking rather than failing open
