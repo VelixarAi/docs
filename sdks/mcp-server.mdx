@@ -78,6 +78,37 @@ The server registers 5 tools:
 | `velixar_update` | Update an existing memory by ID |
 | `velixar_delete` | Delete a memory by ID |
 
+<Warning>
+**Subagent Limitation**: Velixar MCP tools are only available in the **primary agent context**. If your AI assistant supports subagents (like Claude's `use_subagent`), those subagents will NOT have access to Velixar memory tools. Always handle memory operations in the primary agent before/after delegating other tasks to subagents.
+</Warning>
+
+### Workflow Patterns
+
+<Tabs>
+  <Tab title="✅ Correct">
+    ```
+    Primary Agent:
+    1. velixar_search for context
+    2. Delegate file operations to subagent
+    3. velixar_store results
+    ```
+    
+    **Example**: Primary agent searches memory → passes context to subagent for file creation → stores outcome in memory.
+  </Tab>
+  
+  <Tab title="❌ Incorrect">
+    ```
+    Primary Agent:
+    1. Delegate "search memory and create files" to subagent
+    
+    Subagent:
+    - velixar_search → FAILS (tool not available)
+    ```
+    
+    **Problem**: Subagents don't inherit MCP tools from the primary agent.
+  </Tab>
+</Tabs>
+
 ## Environment variables
 
 | Variable | Required | Description |
