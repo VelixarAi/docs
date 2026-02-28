@@ -1,0 +1,75 @@
+---
+title: "Why Your AI Assistant Forgets Everything (And How to Fix It)"
+description: "LLMs are stateless. Every conversation starts from zero. Here's why that's a problem and how persistent memory changes everything."
+date: "2026-02-27"
+author: "Velixar Team"
+tags: ["ai-memory", "llm", "mcp", "developer-tools"]
+---
+
+Every time you start a new conversation with an AI assistant, it has no idea who you are. Your preferences, your project context, the decisions you made yesterday — gone. This is the fundamental limitation of LLMs: they're stateless.
+
+## The Problem
+
+LLMs process each conversation independently. There's no built-in mechanism to carry context between sessions. This means:
+
+- Users repeat themselves constantly
+- Assistants give generic responses instead of personalized ones
+- Project context is lost between conversations
+- Teams can't share institutional knowledge with their AI tools
+
+Developers have tried workarounds — stuffing system prompts with context, building custom RAG pipelines, maintaining conversation logs. These work, but they're fragile, expensive to maintain, and don't scale.
+
+## What Persistent Memory Looks Like
+
+Imagine your AI assistant remembers that you prefer TypeScript over JavaScript, that your project uses PostgreSQL, and that you decided last week to use Redis for caching. Not because you told it again — because it remembered.
+
+That's what a memory layer does. It sits between your application and the LLM, storing and retrieving relevant context automatically.
+
+## How Velixar Solves This
+
+Velixar is a memory API purpose-built for AI applications. You store memories with a simple API call, and retrieve them with semantic search — finding relevant context by meaning, not just keywords.
+
+```python
+import requests
+
+# Store a memory
+requests.post("https://api.velixarai.com/v1/memory",
+    headers={"Authorization": "Bearer vlx_your_key"},
+    json={
+        "content": "User prefers dark mode and metric units",
+        "tier": 0,
+        "tags": ["preferences"]
+    })
+
+# Search by meaning
+results = requests.post("https://api.velixarai.com/v1/memory/search",
+    headers={"Authorization": "Bearer vlx_your_key"},
+    json={"query": "what does the user like?", "limit": 5})
+```
+
+### Tiered Storage
+
+Not all memories are equal. Velixar uses a tiered system:
+
+- **Tier 0 (Pinned)** — Critical facts that should never be forgotten. User preferences, key decisions, identity information.
+- **Tier 1 (Session)** — Current session context. Expires when the session ends.
+- **Tier 2 (Semantic)** — General knowledge. Managed by relevance — frequently recalled memories stay, stale ones decay.
+- **Tier 3 (Organization)** — Shared across your entire team. Institutional knowledge that every team member's AI can access.
+
+### Works With Any MCP Client
+
+The fastest way to add memory to your AI assistant is the MCP server:
+
+```bash
+npm install -g velixar-mcp-server
+```
+
+It works with Claude Desktop, Cursor, Windsurf, Kiro, and any MCP-compatible client. Five tools — store, search, list, update, delete — and your assistant has persistent memory.
+
+## The Shift
+
+AI without memory is like a colleague with amnesia. Useful in the moment, but you're constantly re-explaining context. Memory transforms AI from a stateless tool into a personalized assistant that gets better over time.
+
+The infrastructure for this shouldn't be something every developer builds from scratch. That's why we built Velixar.
+
+[Get started in 2 minutes →](https://docs.velixarai.com/quickstart/overview)

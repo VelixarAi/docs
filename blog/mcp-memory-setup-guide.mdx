@@ -1,0 +1,103 @@
+---
+title: "Add Persistent Memory to Claude, Cursor, or Any MCP Client in 2 Minutes"
+description: "Step-by-step guide to giving your AI assistant long-term memory using the Velixar MCP server. Works with Claude Desktop, Cursor, Windsurf, Kiro, and more."
+date: "2026-02-27"
+author: "Velixar Team"
+tags: ["mcp", "tutorial", "claude", "cursor", "setup"]
+---
+
+The Model Context Protocol (MCP) lets AI assistants use external tools. Velixar's MCP server gives any compatible client persistent memory — your assistant remembers context across sessions without you building anything.
+
+Here's how to set it up.
+
+## Step 1: Get an API Key
+
+Sign up at [velixarai.com](https://velixarai.com) and create an API key from **Settings → API Keys**. Keys start with `vlx_`.
+
+## Step 2: Install the MCP Server
+
+```bash
+npm install -g velixar-mcp-server
+```
+
+## Step 3: Configure Your Client
+
+### Claude Desktop
+
+Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "velixar": {
+      "command": "velixar-mcp-server",
+      "env": {
+        "VELIXAR_API_KEY": "vlx_your_key_here"
+      }
+    }
+  }
+}
+```
+
+### Cursor
+
+Edit `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "velixar": {
+      "command": "velixar-mcp-server",
+      "env": {
+        "VELIXAR_API_KEY": "vlx_your_key_here"
+      }
+    }
+  }
+}
+```
+
+### Kiro CLI
+
+Edit `~/.kiro/settings/mcp.json` with the same format.
+
+### Any MCP Client
+
+The server uses stdio transport. Point your client at the `velixar-mcp-server` command with the `VELIXAR_API_KEY` environment variable.
+
+## Step 4: Use It
+
+Restart your client. You now have 5 memory tools available:
+
+- **velixar_store** — Save a memory with content, tier, and tags
+- **velixar_search** — Find memories by semantic similarity
+- **velixar_list** — Browse stored memories with pagination
+- **velixar_update** — Modify existing memories
+- **velixar_delete** — Remove memories by ID
+
+Try asking your assistant: *"Remember that I prefer TypeScript and use PostgreSQL for my projects."*
+
+Then in a new conversation: *"What tech stack do I use?"*
+
+It remembers.
+
+## What Gets Stored
+
+Memories are embedded using semantic vectors, so search works by meaning — not exact keyword matching. Asking "what does the user prefer?" will find a memory stored as "User likes dark mode and metric units."
+
+Each memory has a tier that controls its lifecycle:
+
+| Tier | Name | Use Case |
+|------|------|----------|
+| 0 | Pinned | Preferences, key facts — permanent |
+| 1 | Session | Current task context — temporary |
+| 2 | Semantic | General knowledge — managed by relevance |
+| 3 | Organization | Team-wide shared knowledge |
+
+## Also Available As
+
+- **Python SDK**: `pip install velixar`
+- **JavaScript SDK**: `npm install velixar`
+- **REST API**: `api.velixarai.com/v1`
+- **Official MCP Registry**: `io.github.VelixarAi/memory`
+
+[Full documentation →](https://docs.velixarai.com)

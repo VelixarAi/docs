@@ -8,12 +8,6 @@ description: "What's coming next for the Velixar Memory API."
 Features actively in development.
 
 <CardGroup cols={2}>
-  <Card title="Team Workspaces" icon="users">
-    Shared memory namespaces for teams. Invite members, manage permissions with RBAC, and share org-wide knowledge across your team's AI applications.
-  </Card>
-  <Card title="Webhooks & Events" icon="bell">
-    Subscribe to memory lifecycle events — new memory stored, conflict resolved, memory deleted. Push notifications to your app in real-time.
-  </Card>
   <Card title="Memory Analytics" icon="chart-line">
     Insights into how your memories are being used — most recalled, least accessed, storage trends, and search patterns.
   </Card>
@@ -44,6 +38,15 @@ On the roadmap, not yet in development.
 ## Shipped Recently
 
 <Steps>
+  <Step title="Team Workspaces">
+    Shared memory namespaces for teams. Invite members, manage permissions with RBAC, and share org-wide knowledge across your team's AI applications.
+  </Step>
+  <Step title="Webhooks & Events">
+    Subscribe to memory lifecycle events — new memory stored, conflict resolved, memory deleted. Push notifications to your app in real-time.
+  </Step>
+  <Step title="MCP Server on Official Registry">
+    Published to the official MCP Registry as io.github.VelixarAi/memory. Works with Claude Desktop, Kiro, Cursor, Windsurf, and any MCP client.
+  </Step>
   <Step title="Auto-Extraction Pipeline">
     Automatically extract memories from conversations with semantic dedup (cosine > 0.85), conflict resolution, and smart tier routing.
   </Step>
