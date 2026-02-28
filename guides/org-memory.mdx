@@ -1,0 +1,123 @@
+---
+title: "Organization Memory"
+description: "Share and manage memories across your team with Organization Memory."
+---
+
+# Organization Memory
+
+Organization Memory lets teams share knowledge across members. Memories flow from individual → team → organization scope through a promotion workflow.
+
+## How It Works
+
+1. A team member **commits** a memory to their team workspace
+2. Managers can **promote** team memories to organization-wide scope
+3. All members can **retrieve** memories from their team and org scopes
+4. Semantic search works across all scopes you have access to
+
+## Scopes
+
+| Scope | Visibility | Who Can Write |
+|-------|-----------|---------------|
+| Team | Team members only | Any team member |
+| Organization | All org members | Managers (via promotion) |
+
+## Tiers
+
+Organization Memory requires a **Team plan** ($20/seat/month, 5-seat minimum). Each seat includes 5,000 org memories. Orgs are auto-provisioned on Team plan checkout.
+
+## API Endpoints
+
+All endpoints are at `https://api.velixarai.com/v1/org/memory/{action}` and require a valid JWT in the `Authorization` header.
+
+### Commit
+
+Store a memory in your team workspace.
+
+```bash
+curl -X POST https://api.velixarai.com/v1/org/memory/commit \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "Our API rate limit is 1000 req/min for enterprise clients",
+    "tags": ["api", "rate-limits"],
+    "type": "team"
+  }'
+```
+
+Committed memories are automatically embedded for semantic search.
+
+### Retrieve
+
+Search memories across your team and organization scopes.
+
+```bash
+curl -X POST https://api.velixarai.com/v1/org/memory/retrieve \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "query": "rate limits",
+    "scope": "all"
+  }'
+```
+
+The `scope` parameter accepts `team`, `org`, or `all` (default).
+
+### Submit
+
+Submit a team memory for promotion to organization scope.
+
+```bash
+curl -X POST https://api.velixarai.com/v1/org/memory/submit \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "memory_id": "uuid-of-team-memory"
+  }'
+```
+
+### Queue
+
+List pending promotion requests (managers and admins only).
+
+```bash
+curl -X GET https://api.velixarai.com/v1/org/memory/queue \
+  -H "Authorization: Bearer YOUR_JWT"
+```
+
+### Promote
+
+Approve or reject a promotion request (managers and admins only).
+
+```bash
+curl -X POST https://api.velixarai.com/v1/org/memory/promote \
+  -H "Authorization: Bearer YOUR_JWT" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "memory_id": "uuid-from-queue",
+    "action": "approve"
+  }'
+```
+
+Use `"action": "reject"` to decline.
+
+## Dashboard
+
+The Organization dashboard at [velixarai.com/org](https://velixarai.com/org) provides:
+
+- **Overview** — member count, memory stats, activity feed, contributions chart
+- **Team Memories** — commit, search, filter by scope, promote
+- **Promotion Queue** — approve/reject pending promotions (managers only)
+- **Audit Log** — full history of commits, promotions, and member changes (managers only)
+- **Settings** — manage teams, members, roles, and invitations (admins only)
+
+## Roles
+
+| Role | Commit | Retrieve | Promote | Manage Members |
+|------|--------|----------|---------|----------------|
+| Member | ✅ | ✅ | ❌ | ❌ |
+| Manager | ✅ | ✅ | ✅ | ❌ |
+| Admin | ✅ | ✅ | ✅ | ✅ |
+
+## Notifications
+
+Managers receive real-time notifications when team members submit memories for promotion. Notifications appear in the bell icon in the navbar.

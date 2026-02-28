@@ -51,7 +51,8 @@
             "pages": [
               "guides/chatbot-memory",
               "guides/user-preferences",
-              "guides/rag-augmentation"
+              "guides/rag-augmentation",
+              "guides/org-memory"
             ]
           },
           {
@@ -66,6 +67,13 @@
             "group": "Roadmap",
             "pages": [
               "roadmap"
+            ]
+          },
+          {
+            "group": "Legal",
+            "pages": [
+              "legal/terms-of-service",
+              "legal/privacy-policy"
             ]
           }
         ]
