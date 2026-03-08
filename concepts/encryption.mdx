@@ -1,0 +1,63 @@
+---
+title: "Encryption"
+description: "How Velixar encrypts memory embeddings with workspace-scoped keys."
+---
+
+Velixar encrypts every memory embedding at rest using **envelope encryption** with workspace-scoped keys. Your memory data is unreadable — even in the event of a storage breach.
+
+## How It Works
+
+<Steps>
+  <Step title="Workspace Key">
+    Each workspace has its own encryption key, managed by AWS KMS. Keys never leave the KMS boundary.
+  </Step>
+  <Step title="Envelope Encryption">
+    When a memory is stored, a unique data key is generated for that operation. The memory embedding is encrypted with the data key, and the data key is encrypted with the workspace's KMS key.
+  </Step>
+  <Step title="Encrypted Storage">
+    The encrypted embedding and the encrypted data key are stored together. The plaintext data key is discarded immediately — it exists only in memory during the encryption operation.
+  </Step>
+  <Step title="Decryption on Recall">
+    When you recall a memory, the encrypted data key is decrypted via KMS, then used to decrypt the embedding. This happens transparently — you interact with plaintext through the API.
+  </Step>
+</Steps>
+
+## What's Encrypted
+
+| Data | Encrypted | Method |
+|---|---|---|
+| Memory embeddings (vectors) | ✅ | AES-256-GCM via envelope encryption |
+| Knowledge graph payloads | ✅ | AES-256-GCM via envelope encryption |
+| Memory content at rest | ✅ | AWS managed encryption |
+| API traffic | ✅ | TLS 1.2+ in transit |
+| Audit trail entries | ✅ | AWS managed encryption |
+
+## Key Isolation
+
+Encryption keys are scoped per workspace. This means:
+
+- Workspace A's keys cannot decrypt Workspace B's data
+- Compromising one workspace's data does not affect any other workspace
+- Key rotation can be performed per workspace without downtime
+- Organization-tier memories use the org's own key scope
+
+## Zero-Knowledge Architecture
+
+Velixar cannot read your memory embeddings. The encryption keys are managed by AWS KMS with strict IAM policies — only the Velixar runtime processing your request can decrypt your data, and only for the duration of that request.
+
+<Info>
+  Encryption is enabled by default for all workspaces. There is no unencrypted mode. This applies to all plans, including Free.
+</Info>
+
+## Compliance
+
+Velixar's encryption architecture is designed to support:
+
+- **SOC 2 Type II** — encryption at rest and in transit, key management, access controls
+- **HIPAA** — workspace isolation, audit logging, encryption with customer-managed keys
+- **GDPR** — data isolation, right to erasure (via key deletion), data residency controls
+- **ISO 27001** — information security management controls
+
+<Tip>
+  Need a BAA, DPA, or custom security review? Contact us at security@velixarai.com.
+</Tip>

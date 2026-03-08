@@ -1,0 +1,73 @@
+---
+title: "Audit Trail"
+description: "Tamper-evident, hash-chained audit logging for every memory operation."
+---
+
+Every memory operation in Velixar is recorded in an **immutable, hash-chained audit log**. This gives you a complete, tamper-evident record of what your AI knew, when it knew it, and how that knowledge changed over time.
+
+## Why Audit Trails Matter
+
+As AI systems make decisions that affect real users, businesses, and regulated processes, you need to answer questions like:
+
+- What did the AI know when it made this recommendation?
+- When was this memory stored, and by which agent?
+- Has this memory been modified since it was created?
+- Who promoted this memory to the org level?
+- What memories were recalled during this conversation?
+
+Velixar's audit trail answers all of these — with cryptographic proof.
+
+## What's Logged
+
+Every operation on the memory system creates an audit entry:
+
+| Operation | Logged Data |
+|---|---|
+| **Store** | Memory ID, content hash, tier, source, timestamp |
+| **Recall** | Query hash, memories returned, scores, timestamp |
+| **Update** | Memory ID, previous content hash, new content hash, timestamp |
+| **Promote** | Memory ID, source workspace, target org, promoted by, timestamp |
+| **Consolidate** | Input memory IDs, output memory ID, consolidation type, timestamp |
+
+## Hash Chain
+
+Each audit entry includes a cryptographic hash of the previous entry, forming an append-only chain. This means:
+
+- **Tamper detection** — modifying any entry breaks the chain from that point forward
+- **Ordering proof** — the chain proves the exact sequence of operations
+- **Completeness** — gaps in the chain are detectable
+
+```
+Entry 1 ──hash──▶ Entry 2 ──hash──▶ Entry 3 ──hash──▶ ...
+```
+
+If an entry is modified after the fact, the hash in the next entry won't match — the tampering is immediately detectable.
+
+## Workspace Scoping
+
+Audit trails are scoped per workspace, just like memories. Each workspace has its own independent audit chain. Org-level promotions are logged in both the source workspace's trail and the org trail.
+
+## Retention
+
+Audit entries are **never deleted**. They are append-only and permanent. This is by design — a complete audit trail is only useful if it's actually complete.
+
+<Info>
+  Audit trail access is available on all paid plans. Free tier workspaces have audit logging enabled but access to the trail requires a Pro plan or above.
+</Info>
+
+## Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Regulatory Compliance" icon="gavel">
+    Demonstrate to auditors exactly what your AI system knew and when — required by EU AI Act, SEC AI disclosure rules, and HIPAA.
+  </Card>
+  <Card title="Debugging AI Behavior" icon="bug">
+    Trace unexpected AI responses back to the specific memories that were recalled and the context that was available.
+  </Card>
+  <Card title="Change Management" icon="code-branch">
+    Track how organizational knowledge evolves — who promoted what, when facts were updated, how conflicts were resolved.
+  </Card>
+  <Card title="Incident Response" icon="shield">
+    In the event of a data issue, the audit trail provides a forensic record of every operation on affected memories.
+  </Card>
+</CardGroup>

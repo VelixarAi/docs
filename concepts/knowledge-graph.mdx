@@ -1,0 +1,62 @@
+---
+title: "Knowledge Graph"
+description: "How Velixar connects memories into a structured knowledge graph."
+---
+
+Velixar doesn't just store memories as isolated vectors. It builds a **directed knowledge graph** that captures relationships between entities, concepts, and facts across your entire memory space.
+
+## Why a Knowledge Graph?
+
+Vector search finds memories that are *semantically similar* to your query. But similarity isn't the same as *relevance*.
+
+| Scenario | Vector Search Only | With Knowledge Graph |
+|---|---|---|
+| Query: "user's database" | Returns "User uses PostgreSQL" | Returns PostgreSQL + connected: hosting on AWS, ORM is Prisma, migrating from MySQL |
+| Query: "project risks" | Returns memories containing "risk" | Returns risk memories + connected: deadline, team capacity, blocked dependencies |
+| Query: "onboarding checklist" | Returns the checklist | Returns checklist + connected: which steps are done, who completed them, what's blocked |
+
+## How It Works
+
+When memories are stored, Velixar automatically:
+
+1. **Extracts entities** — people, tools, concepts, projects, decisions
+2. **Creates nodes** — each entity gets a unique, content-addressed node in the graph
+3. **Creates edges** — relationships between entities are captured as directed edges (e.g., "User → uses → PostgreSQL")
+4. **Links to memories** — every node references the memories it was derived from
+
+When you recall, the graph is traversed to pull in contextually connected knowledge — not just similar text.
+
+## Content-Addressed Nodes
+
+Every node in the knowledge graph is addressed by a deterministic hash of its content. This means:
+
+- The same concept always resolves to the same node, regardless of when or how it was stored
+- Duplicate entities are impossible by construction
+- Nodes can be referenced across workspaces when promoted to org level
+
+## Graph Queries
+
+The knowledge graph enhances every recall automatically. You don't need to query it separately — when you search for memories, connected graph nodes enrich the results.
+
+```python
+from velixar import Velixar
+
+client = Velixar(api_key="vlx_...")
+
+# This recall automatically traverses the knowledge graph
+results = client.search("what database does the team use?")
+
+# Results include direct matches AND graph-connected context:
+# - "Team uses PostgreSQL 16" (direct match)
+# - "PostgreSQL hosted on AWS RDS" (connected via graph)
+# - "Prisma ORM configured for PostgreSQL" (connected via graph)
+# - "Migration from MySQL completed Feb 2026" (connected via graph)
+```
+
+## Org-Wide Knowledge Graph
+
+When memories are promoted from a workspace to the organization tier, their knowledge graph nodes are promoted too. This creates an org-wide knowledge graph that captures institutional knowledge across all teams.
+
+<Info>
+  The knowledge graph is built and maintained automatically. You don't need to define schemas, create relationships manually, or manage graph operations. Just store memories — Velixar handles the rest.
+</Info>

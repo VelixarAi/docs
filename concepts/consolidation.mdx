@@ -1,0 +1,79 @@
+---
+title: "Consolidation"
+description: "How Velixar synthesizes related memories into higher-order knowledge."
+---
+
+Velixar periodically runs **deep consolidation** — a process that synthesizes related memories into higher-order knowledge, similar to how human memory consolidates during sleep.
+
+## The Problem with Raw Memory
+
+Over time, a memory store accumulates thousands of individual facts:
+
+- "User deployed to AWS on Feb 10"
+- "User switched from Heroku to AWS"
+- "User's AWS region is us-east-1"
+- "User uses CloudFront for CDN"
+- "User's S3 bucket is called app-assets"
+
+These are all correct, but they're fragmented. When your AI needs to understand "the user's infrastructure", it has to retrieve and stitch together dozens of individual memories.
+
+## How Consolidation Works
+
+<Steps>
+  <Step title="Cluster Detection">
+    Velixar identifies clusters of semantically related memories within a workspace.
+  </Step>
+  <Step title="Synthesis">
+    Related memories are synthesized into a consolidated summary that captures the essential knowledge without redundancy.
+  </Step>
+  <Step title="Lineage Preservation">
+    The consolidated memory links back to every source memory it was derived from. Nothing is lost — the originals remain accessible.
+  </Step>
+  <Step title="Salience Inheritance">
+    The consolidated memory inherits the highest salience score from its source memories, ensuring important knowledge stays prominent.
+  </Step>
+</Steps>
+
+## Before & After
+
+**Before consolidation** — 5 separate memories:
+
+```
+"User deployed to AWS on Feb 10"
+"User switched from Heroku to AWS"
+"User's AWS region is us-east-1"
+"User uses CloudFront for CDN"
+"User's S3 bucket is called app-assets"
+```
+
+**After consolidation** — 1 consolidated memory (originals preserved):
+
+```
+"User's infrastructure: AWS (us-east-1), migrated from Heroku on Feb 10.
+ CDN via CloudFront, static assets in S3 bucket 'app-assets'."
+```
+
+Now a single recall for "user's infrastructure" returns the complete picture.
+
+## Automatic Scheduling
+
+Deep consolidation runs automatically on a recurring schedule. You don't need to trigger it manually. The consolidation engine:
+
+- Scans all active workspaces
+- Identifies memory clusters that would benefit from synthesis
+- Runs consolidation without affecting real-time recall performance
+- Logs every consolidation event in the [audit trail](/concepts/audit-trail)
+
+## Hierarchical Abstraction
+
+Consolidation can operate at multiple levels:
+
+1. **Fact-level** — merge redundant facts about the same entity
+2. **Topic-level** — synthesize facts into topic summaries (e.g., "infrastructure", "preferences", "team structure")
+3. **Domain-level** — create high-level domain summaries from topic summaries
+
+This hierarchical approach means your AI can recall at the right level of detail — a quick overview when needed, or deep specifics when the query demands it.
+
+<Info>
+  Consolidation never deletes source memories. The originals are always available for detailed recall. Consolidated memories are additive — they provide a synthesized view on top of the raw facts.
+</Info>

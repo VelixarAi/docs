@@ -41,8 +41,13 @@
           {
             "group": "Core Concepts",
             "pages": [
+              "concepts/architecture",
               "concepts/memories",
               "concepts/tiers",
+              "concepts/knowledge-graph",
+              "concepts/encryption",
+              "concepts/audit-trail",
+              "concepts/consolidation",
               "concepts/extraction"
             ]
           },

@@ -1,0 +1,92 @@
+---
+title: "Architecture"
+description: "How Velixar's cognitive architecture works — from storage to recall to consolidation."
+---
+
+Velixar isn't a vector database with an API. It's a **cognitive architecture** — a multi-layered system that stores, organizes, connects, encrypts, and evolves knowledge over time.
+
+## The Memory Stack
+
+```
+┌─────────────────────────────────────────────┐
+│              Your Application               │
+│         (Chat, Agent, Workflow)              │
+└──────────────────┬──────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────┐
+│            Velixar Memory API               │
+│     store · recall · search · promote       │
+└──────────────────┬──────────────────────────┘
+                   │
+        ┌──────────┼──────────┐
+        ▼          ▼          ▼
+┌────────────┐ ┌────────┐ ┌──────────────┐
+│  Encrypted │ │ Knowledge│ │  Audit       │
+│  Vector    │ │ Graph    │ │  Trail       │
+│  Store     │ │          │ │              │
+└────────────┘ └────────┘ └──────────────┘
+        │          │          │
+        └──────────┼──────────┘
+                   ▼
+        ┌─────────────────────┐
+        │   Consolidation     │
+        │   Engine            │
+        └─────────────────────┘
+```
+
+## Core Components
+
+<CardGroup cols={2}>
+  <Card title="Encrypted Vector Store" icon="lock" href="/concepts/encryption">
+    Every memory embedding is encrypted with workspace-scoped keys before storage. Your data is unreadable — even to us.
+  </Card>
+  <Card title="Knowledge Graph" icon="diagram-project" href="/concepts/knowledge-graph">
+    Memories aren't isolated points. Velixar builds a directed graph of relationships between concepts, entities, and facts.
+  </Card>
+  <Card title="Immutable Audit Trail" icon="scroll" href="/concepts/audit-trail">
+    Every memory operation — store, recall, update, promote — is logged in a tamper-evident, hash-chained audit log.
+  </Card>
+  <Card title="Deep Consolidation" icon="brain" href="/concepts/consolidation">
+    Velixar periodically synthesizes related memories into higher-order knowledge — like how human memory consolidates during sleep.
+  </Card>
+</CardGroup>
+
+## How Recall Works
+
+When you search for a memory, Velixar does more than vector similarity:
+
+<Steps>
+  <Step title="Semantic Search">
+    Your query is embedded and matched against encrypted vectors. Top candidates are decrypted and ranked.
+  </Step>
+  <Step title="Knowledge Graph Traversal">
+    Related nodes in the knowledge graph are pulled in — if you recall "user's tech stack", connected facts about their database, framework, and deployment target come along.
+  </Step>
+  <Step title="Salience Boost">
+    Recalled memories automatically increase in salience. Frequently accessed knowledge rises to the top. Dormant memories stay available but don't crowd active context.
+  </Step>
+  <Step title="Audit Logging">
+    The recall event is recorded in the audit trail — what was recalled, when, and in what context.
+  </Step>
+</Steps>
+
+## Infinite Memory
+
+Velixar never deletes memories. There are no TTLs, no decay, no pruning. Every memory stored is available forever.
+
+Instead of deletion, Velixar uses **salience** — a dynamic score that determines how prominently a memory surfaces in search results. Active memories have high salience. Dormant memories have low salience but can be recalled at any time, and when they are, their salience climbs back up.
+
+This means your AI system builds a genuine long-term memory that grows more valuable over time.
+
+## Workspace Isolation
+
+Every workspace operates in complete isolation:
+
+- Separate encryption keys per workspace
+- Separate vector collections (optional)
+- Separate knowledge graph namespace
+- Separate audit trail
+- No cross-workspace data leakage, ever
+
+Org-tier memories can be explicitly promoted from a workspace to the organization level, with full lineage tracking.
