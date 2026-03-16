@@ -1,0 +1,41 @@
+---
+title: "Traverse Graph"
+api: "POST /graph/traverse"
+description: "Walk entity relationships from a focal point."
+---
+
+Starting from a named entity, traverse its relationships to discover connected entities — dependencies, collaborators, related concepts, and more.
+
+## Request Body
+
+<ParamField body="entity" type="string" required>
+  Entity name to traverse from.
+</ParamField>
+
+<ParamField body="max_hops" type="integer" default="2">
+  Maximum traversal depth (max 10).
+</ParamField>
+
+## Response
+
+```json
+{
+  "nodes": [
+    {
+      "id": "node-abc",
+      "entity_type": "project",
+      "label": "velixar-mcp-server",
+      "properties": { "description": "MCP server for AI memory" },
+      "relevance": 0.95
+    }
+  ],
+  "edges": [
+    {
+      "source": "node-abc",
+      "target": "node-def",
+      "relation_type": "depends_on",
+      "weight": 0.8
+    }
+  ]
+}
+```

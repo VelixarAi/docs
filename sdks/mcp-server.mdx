@@ -1,9 +1,11 @@
 ---
 title: "MCP Server"
-description: "Use Velixar memory from any MCP-compatible AI assistant."
+description: "Cognitive memory for any MCP-compatible AI assistant — 25 tools, live resources, workflow prompts."
 ---
 
-The Velixar MCP server exposes your memory API as [Model Context Protocol](https://modelcontextprotocol.io) tools — letting Claude Desktop, Kiro, Cursor, and other MCP clients store and search memories natively.
+The Velixar MCP server is a cognitive memory layer for AI assistants. It goes beyond store-and-retrieve — your assistant gets orientation, contradiction detection, knowledge graph traversal, identity awareness, and belief tracking that persists across every session.
+
+Works with [Claude Desktop](https://claude.ai), [Kiro](https://kiro.dev), [Cursor](https://cursor.sh), [Windsurf](https://codeium.com/windsurf), [Continue.dev](https://continue.dev), and any [MCP](https://modelcontextprotocol.io)-compatible client.
 
 ## Install
 
@@ -13,9 +15,7 @@ npm install -g velixar-mcp-server
 
 ## Configure
 
-You only need your API key. Get one from [Settings → API Keys](https://velixarai.com/settings) in the Velixar dashboard.
-
-Add to your MCP client config:
+Get an API key from [Settings → API Keys](https://velixarai.com/settings).
 
 <CodeGroup>
 ```json Kiro (~/.kiro/settings/mcp.json)
@@ -44,7 +44,7 @@ Add to your MCP client config:
 }
 ```
 
-```json Cursor
+```json Cursor (.cursor/mcp.json)
 {
   "mcpServers": {
     "velixar": {
@@ -58,66 +58,134 @@ Add to your MCP client config:
 ```
 </CodeGroup>
 
-That's it — restart your MCP client and the Velixar tools will be available.
+Restart your assistant. The 25 tools, resources, and prompts are immediately available.
 
-## Auto-recall
+## What Makes This Different
 
-When the server starts, it automatically fetches your most recent memories and exposes them as an MCP resource (`velixar://memories/recent`). Clients that support resources will see this context immediately — no manual search needed.
+Most memory tools give you store and search. Velixar gives your assistant a cognitive layer:
 
-Set `VELIXAR_AUTO_RECALL` to `false` to disable, or adjust `VELIXAR_RECALL_LIMIT` to control how many memories are loaded.
+<CardGroup cols={2}>
+  <Card title="Orient in one call" icon="compass">
+    `velixar_context` synthesizes a workspace briefing from memories, identity, and graph data — your assistant knows where it is immediately.
+  </Card>
+  <Card title="Knowledge graph" icon="diagram-project">
+    `velixar_graph_traverse` walks entity relationships. Your assistant understands how concepts, people, and systems connect.
+  </Card>
+  <Card title="Contradiction detection" icon="triangle-exclamation">
+    `velixar_contradictions` surfaces conflicting beliefs with resolution guidance. No more silently holding two incompatible facts.
+  </Card>
+  <Card title="Belief evolution" icon="timeline">
+    `velixar_timeline` shows how understanding of a topic changed over time — not just what's true now, but how you got here.
+  </Card>
+  <Card title="Identity awareness" icon="user">
+    `velixar_identity` maintains a persistent model of who you are — preferences, expertise, goals, constraints.
+  </Card>
+  <Card title="Session continuity" icon="rotate">
+    `velixar_session_save` and `velixar_session_recall` let your assistant pick up exactly where it left off.
+  </Card>
+</CardGroup>
 
 ## Tools
 
-The server registers 5 tools:
+### Memory (5 tools)
 
 | Tool | Description |
-|---|---|
-| `velixar_store` | Store a memory with content, tags, tier, and type |
+|------|-------------|
+| `velixar_store` | Store a memory with tags, tier, and type |
 | `velixar_search` | Semantic search across memories |
-| `velixar_list` | List memories with pagination (returns full metadata including IDs) |
-| `velixar_update` | Update an existing memory by ID |
-| `velixar_delete` | Delete a memory by ID |
+| `velixar_list` | Browse with pagination |
+| `velixar_update` | Edit content or tags |
+| `velixar_delete` | Remove a memory |
 
-<Warning>
-**Subagent Limitation**: Velixar MCP tools are only available in the **primary agent context**. If your AI assistant supports subagents (like Claude's `use_subagent`), those subagents will NOT have access to Velixar memory tools. Always handle memory operations in the primary agent before/after delegating other tasks to subagents.
-</Warning>
+### Cognitive (8 tools)
 
-### Workflow Patterns
+| Tool | Description |
+|------|-------------|
+| `velixar_context` | Synthesized workspace briefing |
+| `velixar_identity` | User profile — get, store, or update |
+| `velixar_contradictions` | Conflicting facts with resolution guidance |
+| `velixar_timeline` | How a topic evolved over time |
+| `velixar_patterns` | Recurring problem/solution motifs |
+| `velixar_inspect` | Deep memory inspection with provenance |
+| `velixar_graph_traverse` | Walk entity relationships |
+| `velixar_distill` | Extract durable memories from sessions |
 
-<Tabs>
-  <Tab title="✅ Correct">
-    ```
-    Primary Agent:
-    1. velixar_search for context
-    2. Delegate file operations to subagent
-    3. velixar_store results
-    ```
-    
-    **Example**: Primary agent searches memory → passes context to subagent for file creation → stores outcome in memory.
-  </Tab>
-  
-  <Tab title="❌ Incorrect">
-    ```
-    Primary Agent:
-    1. Delegate "search memory and create files" to subagent
-    
-    Subagent:
-    - velixar_search → FAILS (tool not available)
-    ```
-    
-    **Problem**: Subagents don't inherit MCP tools from the primary agent.
-  </Tab>
-</Tabs>
+### Lifecycle (8 tools)
 
-## Environment variables
+| Tool | Description |
+|------|-------------|
+| `velixar_session_save` | Save session for later recall |
+| `velixar_session_recall` | Restore previous session context |
+| `velixar_batch_store` | Store up to 20 memories at once |
+| `velixar_batch_search` | Run up to 10 queries simultaneously |
+| `velixar_consolidate` | Merge related memories |
+| `velixar_retag` | Bulk update tags |
+| `velixar_export` | Export as JSON or Markdown |
+| `velixar_import` | Bulk import from JSON, Markdown, Notion, Obsidian |
+
+### System (4 tools)
+
+| Tool | Description |
+|------|-------------|
+| `velixar_health` | Backend status and latency |
+| `velixar_debug` | Diagnostics and cache state |
+| `velixar_capabilities` | Feature inventory |
+| `velixar_security` | Content scanning mode |
+
+## Live Resources
+
+Resources inject context into your assistant automatically — no tool call needed.
+
+| Resource | Content |
+|----------|---------|
+| `velixar://system/constitution` | Behavioral rules and cognitive modes |
+| `velixar://identity/current` | Your persistent user profile |
+| `velixar://memories/recent` | Recent memories (compact) |
+| `velixar://memories/relevant` | Contextually relevant memories |
+| `velixar://domains/{domain}/shadow_graph` | Knowledge graph for a domain |
+
+<Info>
+Hosts that don't support resources (like Cursor) still get full tool access. The same information is available via `velixar_context`, `velixar_identity`, and `velixar_capabilities`.
+</Info>
+
+## Workflow Prompts
+
+16 built-in prompts guide multi-step reasoning:
+
+| Group | Prompts |
+|-------|---------|
+| Orientation | Recall prior reasoning, build project context, profile entity, orient-then-narrow |
+| Conflict | Resolve contradiction, identify knowledge gaps |
+| Continuity | Trace belief evolution, resume session, reconstruct decision path |
+| Lifecycle | Distill session, consolidate topic, retag recent |
+| Identity | Summarize identity, detect preference shift, align response style |
+| Enterprise | Evaluate enterprise fit |
+
+## Workspace Isolation
+
+Memories are scoped per workspace. Projects never bleed into each other.
+
+| Priority | Source |
+|----------|--------|
+| 1 | `VELIXAR_WORKSPACE_ID` env var |
+| 2 | `.velixar.json` in project root |
+| 3 | Git root directory name (automatic) |
+
+## Environment Variables
 
 | Variable | Required | Description |
-|---|---|---|
-| `VELIXAR_API_KEY` | Yes | Your API key from [Settings → API Keys](https://velixarai.com/settings). Starts with `vlx_`. |
-| `VELIXAR_USER_ID` | No | An arbitrary label to tag memories (e.g. `kiro`, `claude`). Useful if you use multiple MCP clients and want to filter memories by source. Default: `mcp-user`. |
-| `VELIXAR_API_URL` | No | Custom API base URL. Default: `https://api.velixarai.com` |
-| `VELIXAR_AUTO_RECALL` | No | Fetch recent memories on startup. Default: `true` |
-| `VELIXAR_RECALL_LIMIT` | No | Number of memories to auto-recall. Default: `10` |
+|----------|----------|-------------|
+| `VELIXAR_API_KEY` | Yes | Your API key (`vlx_...`) |
+| `VELIXAR_WORKSPACE_ID` | No | Explicit workspace scope |
+| `VELIXAR_API_URL` | No | Custom API endpoint |
+| `VELIXAR_USER_ID` | No | User ID for scoping |
+| `VELIXAR_DEBUG` | No | `true` for verbose logging |
+| `VELIXAR_LOG_FORMAT` | No | `json` for structured logging |
+| `VELIXAR_HEALTH_PORT` | No | HTTP health check port |
+
+## Reliability
+
+The server includes automatic retry with exponential backoff, a circuit breaker that opens after sustained failures and auto-recovers, and cache fallback that serves stale data during outages rather than failing.
 
 ## Source
 

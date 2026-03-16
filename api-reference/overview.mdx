@@ -1,0 +1,30 @@
+---
+title: "Knowledge Graph Overview"
+api: "GET /exocortex/overview"
+description: "Stats and density metrics for your knowledge graph."
+---
+
+Returns a high-level view of your memory corpus — total memories, graph nodes, and knowledge density.
+
+## Response
+
+```json
+{
+  "total_memories": 635,
+  "cortex_nodes": 2985,
+  "temporal_chains": 0,
+  "knowledge_density": "High"
+}
+```
+
+<ResponseField name="total_memories" type="integer">
+  Total memories stored in the workspace.
+</ResponseField>
+
+<ResponseField name="cortex_nodes" type="integer">
+  Entities in the knowledge graph — people, projects, technologies, concepts.
+</ResponseField>
+
+<ResponseField name="knowledge_density" type="string">
+  `Low` (<20 memories), `Medium` (20–100), `High` (>100).
+</ResponseField>

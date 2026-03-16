@@ -1,6 +1,6 @@
 ---
 title: "Python SDK"
-description: "Install and use the Velixar Python client."
+description: "Velixar Python client — sync and async, memory, knowledge graph, identity, and CI/CD webhook."
 ---
 
 ## Install
@@ -9,61 +9,119 @@ description: "Install and use the Velixar Python client."
 pip install velixar
 ```
 
-## Quick start
+## Quick Start
 
 ```python
 from velixar import Velixar
 
-client = Velixar(api_key="vlx_your_key")
+v = Velixar(api_key="vlx_your_key")
 
 # Store
-mem = client.store("User prefers dark mode", user_id="user_123", tier=0)
-print(mem.id)  # mem_abc123
+memory_id = v.store("Staging database is in us-west-2", tags=["infrastructure"])
 
 # Search
-results = client.search("display preferences", user_id="user_123", limit=5)
-for r in results:
-    print(f"{r.score:.2f} — {r.content}")
+results = v.search("staging database")
+for mem in results.memories:
+    print(mem.content)
 
-# Get
-memory = client.get(mem.id)
+# Knowledge graph
+graph = v.graph_traverse("PostgreSQL", depth=2)
+for node in graph.nodes:
+    print(f"{node.label} ({node.entity_type})")
 
-# Delete
-client.delete(mem.id)
+# Identity
+profile = v.get_identity()
+
+# CI/CD webhook
+v.webhook("deployment", "Deployed v1.0.0", version="1.0.0")
+```
+
+## Async Client
+
+```python
+from velixar import AsyncVelixar
+
+async with AsyncVelixar(api_key="vlx_your_key") as v:
+    memory_id = await v.store("async memory")
+    results = await v.search("async")
+    graph = await v.graph_traverse("PostgreSQL")
 ```
 
 ## Configuration
 
 ```python
-client = Velixar(
-    api_key="vlx_your_key",
-    base_url="https://api.velixarai.com",  # default
-    timeout=30,                              # seconds
+v = Velixar(
+    api_key="vlx_your_key",          # Required (or set VELIXAR_API_KEY env var)
+    base_url="https://...",           # Optional — custom endpoint
+    workspace_id="my-project",        # Optional — workspace isolation
+    max_retries=3,                    # Optional
+    timeout=30.0,                     # Optional (seconds)
 )
 ```
 
-## Store options
+The API key and base URL can also be set via `VELIXAR_API_KEY` and `VELIXAR_BASE_URL` environment variables.
+
+## Methods
+
+### Memory
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `store(content, **opts)` | `str` (ID) | Store a memory |
+| `search(query, **opts)` | `SearchResult` | Semantic search |
+| `list(**opts)` | `SearchResult` | Paginated list |
+| `get(id)` | `Memory` | Get by ID |
+| `update(id, **opts)` | `bool` | Update content or tags |
+| `delete(id)` | `bool` | Delete |
+| `store_many(memories)` | `BatchStoreResponse` | Batch store |
+
+### Knowledge Graph
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `graph_traverse(entity, **opts)` | `TraverseResult` | Walk relationships |
+| `graph_search(query, **opts)` | `list[GraphEntity]` | Search entities |
+| `graph_entities(**opts)` | `list[GraphEntity]` | List entities |
+
+### Cognitive
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `get_identity(**opts)` | `dict` | User profile |
+| `overview()` | `dict` | Knowledge graph stats |
+| `contradictions()` | `list[dict]` | Conflicting facts |
+
+### Integration
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `webhook(event_type, content, **opts)` | `dict` | CI/CD event |
+| `health()` | `dict` | Health check |
+
+## Types
 
 ```python
-client.store(
-    content="User's company is Acme Corp",
-    user_id="user_123",
-    tier=0,                    # 0=pinned, 1=session, 2=semantic, 3=org
-    type="fact",               # fact, preference, context
-    tags=["company", "profile"],
-    metadata={"source": "onboarding"}
-)
+from velixar import Memory, SearchResult, MemoryTier, GraphEntity, GraphRelation, TraverseResult
 ```
 
-## Search with filters
+- `MemoryTier.PINNED` (0), `SESSION` (1), `SEMANTIC` (2), `ORGANIZATION` (3)
+- `GraphEntity` — `id`, `entity_type`, `label`, `properties`, `relevance`
+- `GraphRelation` — `source`, `target`, `relation_type`, `weight`
+- `TraverseResult` — `nodes: list[GraphEntity]`, `edges: list[GraphRelation]`
+
+## Error Handling
 
 ```python
-results = client.search(
-    query="company information",
-    user_id="user_123",
-    limit=10,
-    tiers=[0, 2]  # Only pinned + semantic
-)
+from velixar import VelixarError, AuthenticationError, RateLimitError, NotFoundError
+
+try:
+    v.get("nonexistent-id")
+except NotFoundError:
+    print("Memory not found")
+except RateLimitError as e:
+    print(f"Rate limited, retry after {e.retry_after}s")
+except VelixarError as e:
+    print(f"API error: {e}")
 ```
 
 ## Source

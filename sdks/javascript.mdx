@@ -1,6 +1,6 @@
 ---
 title: "JavaScript SDK"
-description: "Install and use the Velixar JavaScript/Node.js client."
+description: "Velixar JavaScript/TypeScript client — memory, knowledge graph, identity, and CI/CD webhook."
 ---
 
 ## Install
@@ -9,58 +9,86 @@ description: "Install and use the Velixar JavaScript/Node.js client."
 npm install velixar
 ```
 
-## Quick start
+## Quick Start
 
-```javascript
-import { Velixar } from 'velixar';
+```typescript
+import Velixar from 'velixar';
 
-const client = new Velixar({ apiKey: 'vlx_your_key' });
+const v = new Velixar({ apiKey: 'vlx_your_key' });
 
 // Store
-const mem = await client.store({
-  content: 'User prefers dark mode',
-  userId: 'user_123',
-  tier: 0
+const { id } = await v.store('Staging database is in us-west-2', {
+  tags: ['infrastructure', 'staging']
 });
-console.log(mem.id); // mem_abc123
 
 // Search
-const results = await client.search({
-  query: 'display preferences',
-  userId: 'user_123',
-  limit: 5
+const results = await v.search('staging database');
+
+// Knowledge graph
+const graph = await v.graphTraverse('PostgreSQL', { depth: 2 });
+
+// Identity
+const profile = await v.getIdentity();
+
+// CI/CD webhook
+await v.webhook('deployment', 'Deployed v1.0.0 to production', {
+  tags: ['production'], metadata: { version: '1.0.0' }
 });
-results.forEach(r => console.log(`${r.score} — ${r.content}`));
-
-// Get
-const memory = await client.get(mem.id);
-
-// Delete
-await client.delete(mem.id);
 ```
 
 ## Configuration
 
-```javascript
-const client = new Velixar({
-  apiKey: 'vlx_your_key',
-  baseUrl: 'https://api.velixarai.com', // default
-  timeout: 30000,                         // ms
+```typescript
+const v = new Velixar({
+  apiKey: 'vlx_your_key',       // Required
+  baseUrl: 'https://...',       // Optional — custom endpoint
+  workspaceId: 'my-project',    // Optional — workspace isolation
+  maxRetries: 3,                // Optional — retry attempts
+  timeout: 30000,               // Optional — request timeout (ms)
 });
 ```
+
+## Methods
+
+### Memory
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `store(content, opts?)` | `{ id }` | Store a memory |
+| `search(query, opts?)` | `SearchResult` | Semantic search |
+| `list(opts?)` | `ListResult` | Paginated list |
+| `get(id)` | `Memory` | Get by ID |
+| `update(id, updates)` | `{ updated }` | Update content or tags |
+| `delete(id)` | `{ deleted }` | Delete |
+
+### Knowledge Graph
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `graphTraverse(entity, opts?)` | `TraverseResult` | Walk relationships |
+| `graphSearch(query, opts?)` | `{ entities }` | Search entities |
+| `graphEntities(opts?)` | `{ entities }` | List all entities |
+
+### Cognitive
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `getIdentity(opts?)` | `IdentityProfile` | User profile |
+| `overview()` | `OverviewResult` | Knowledge graph stats |
+| `contradictions()` | `{ contradictions }` | Conflicting facts |
+
+### Integration
+
+| Method | Returns | Description |
+|--------|---------|-------------|
+| `webhook(eventType, content, opts?)` | `WebhookResult` | CI/CD event |
+| `exportMemories(opts?)` | `ExportResult` | Export as JSON/Markdown |
+| `importMemories(data, opts?)` | `{ imported, failed }` | Bulk import |
+| `health()` | `object` | Health check |
 
 ## TypeScript
 
-The SDK is written in TypeScript with full type definitions:
-
-```typescript
-import { Velixar, Memory, SearchResult } from 'velixar';
-
-const results: SearchResult[] = await client.search({
-  query: 'user preferences',
-  userId: 'user_123'
-});
-```
+Full type definitions included. Key types: `Memory`, `SearchResult`, `GraphEntity`, `GraphRelation`, `TraverseResult`, `IdentityProfile`.
 
 ## Source
 

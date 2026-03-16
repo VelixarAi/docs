@@ -1,18 +1,21 @@
 ---
 title: "Introduction"
-description: "Long-term memory for AI applications. Store, search, and recall context across sessions."
+description: "Cognitive memory infrastructure for AI. Store, reason over, and recall context across every session."
 ---
 
 # What is Velixar?
 
-Velixar is a **memory layer for AI**. It gives your LLM-powered applications persistent, semantic memory — so they remember users, learn preferences, and retrieve relevant context automatically.
+Velixar is **cognitive memory for AI**. Not a vector database — a reasoning layer that gives your AI applications persistent memory, a knowledge graph, identity awareness, contradiction detection, and belief tracking across every session.
 
 <CardGroup cols={3}>
   <Card title="Quickstart" icon="rocket" href="/quickstart/overview">
     Store your first memory in under 2 minutes
   </Card>
   <Card title="API Reference" icon="code" href="/api-reference/introduction">
-    Full endpoint documentation with examples
+    Memory, graph, identity, and webhook endpoints
+  </Card>
+  <Card title="MCP Server" icon="plug" href="/sdks/mcp-server">
+    25 cognitive tools for Claude, Kiro, Cursor
   </Card>
   <Card title="Python SDK" icon="python" href="/sdks/python">
     pip install velixar
@@ -20,50 +23,77 @@ Velixar is a **memory layer for AI**. It gives your LLM-powered applications per
   <Card title="JavaScript SDK" icon="js" href="/sdks/javascript">
     npm install velixar
   </Card>
-  <Card title="MCP Server" icon="plug" href="/sdks/mcp-server">
-    Use Velixar from Claude, Kiro, or Cursor
+  <Card title="Knowledge Graph" icon="diagram-project" href="/api-reference/graph-entities">
+    Entities, relationships, traversal
   </Card>
-  <Card title="Architecture" icon="sitemap" href="/concepts/architecture">
-    How Velixar is built
+  <Card title="CI/CD Webhook" icon="webhook" href="/api-reference/webhook">
+    Store deployments and decisions as memories
   </Card>
   <Card title="Security" icon="shield-halved" href="/concepts/security">
-    6-layer defense in depth
-  </Card>
-  <Card title="CLI" icon="terminal" href="/sdks/cli">
-    pip install velixar-cli
+    Workspace isolation and content scanning
   </Card>
 </CardGroup>
 
 ## Why Velixar?
 
-LLMs are stateless. Every conversation starts from zero. Velixar fixes that.
+LLMs are stateless. Every conversation starts from zero. Most "memory" solutions just add a vector store. Velixar goes further.
 
-| Without Velixar | With Velixar |
-|---|---|
-| User repeats preferences every session | Preferences recalled automatically |
-| No context between conversations | Full conversation history available |
-| Generic responses for every user | Personalized responses from memory |
-| Manual RAG pipeline management | Semantic search built in |
+| Capability | Basic memory tools | Velixar |
+|---|---|---|
+| Store and search | ✅ | ✅ |
+| Workspace isolation | ❌ | ✅ Per-project scoping, zero bleed |
+| Knowledge graph | ❌ | ✅ Entities and relationships extracted automatically |
+| Contradiction detection | ❌ | ✅ Surface conflicting facts with resolution guidance |
+| Belief evolution | ❌ | ✅ Track how understanding changes over time |
+| Identity model | ❌ | ✅ Persistent user profile — preferences, expertise, goals |
+| Session continuity | ❌ | ✅ Save and restore full session context |
+| CI/CD integration | ❌ | ✅ Webhook + GitHub Actions for deployment and decision memory |
+| Cognitive prompts | ❌ | ✅ 16 guided reasoning workflows |
 
-## How it works
+## How It Works
 
 <Steps>
   <Step title="Store">
-    Send memories to the API — facts, preferences, context, decisions. Each memory is embedded and indexed for semantic search.
+    Send memories to the API — facts, preferences, decisions, session summaries. Each memory is embedded, indexed, and entities are extracted into a knowledge graph.
+  </Step>
+  <Step title="Reason">
+    Your AI doesn't just retrieve text — it orients itself in the workspace, traverses entity relationships, detects contradictions, and tracks how beliefs evolved.
   </Step>
   <Step title="Recall">
-    Query with natural language. Velixar returns the most relevant memories ranked by semantic similarity.
-  </Step>
-  <Step title="Auto-extract">
-    Enable auto-extraction and Velixar pulls key facts from conversations automatically — no manual tagging needed.
+    Query with natural language. Velixar returns semantically relevant memories ranked by relevance, with full provenance and confidence signals.
   </Step>
 </Steps>
 
-## Key features
+## The MCP Server
 
-- **Semantic search** — Find memories by meaning, not just keywords
-- **Tiered storage** — Pin critical facts (tier 0), session context (tier 1), semantic (tier 2), org-wide (tier 3)
-- **Auto-extraction** — Automatically extract memories from conversations with deduplication
-- **Conflict resolution** — New information supersedes old, stale memories are cleaned up
-- **Multi-tenant** — Isolate memories per user, per workspace, or share across an org
-- **SDKs** — Python, JavaScript, CLI, MCP server, plus LangChain integration
+The fastest way to use Velixar is the MCP server — one install gives any compatible AI assistant 25 cognitive tools, 5 live resources, and 16 workflow prompts:
+
+```bash
+npm install -g velixar-mcp-server
+```
+
+Your assistant immediately gets orientation, contradiction detection, knowledge graph traversal, identity awareness, session continuity, and import/export — all through the standard MCP protocol.
+
+[Full MCP server documentation →](/sdks/mcp-server)
+
+## SDKs
+
+Use Velixar directly from code:
+
+```bash
+# Python
+pip install velixar
+
+# JavaScript / TypeScript
+npm install velixar
+```
+
+Both SDKs support memory CRUD, knowledge graph traversal, identity, and the CI/CD webhook. Python includes both sync and async clients.
+
+## Key Concepts
+
+- **[Memories](/concepts/memories)** — The atomic unit of knowledge. Text with tags, tiers, and provenance.
+- **[Tiers](/concepts/tiers)** — Pinned (0), Session (1), Semantic (2), Organization (3). Different persistence and visibility.
+- **[Knowledge Graph](/api-reference/graph-entities)** — Entities and relationships extracted automatically from memories.
+- **[Workspace Isolation](/concepts/architecture)** — Every memory is scoped to a workspace. Projects never bleed.
+- **[Org Memory](/concepts/org-memory)** — Share knowledge across teams with approval workflows.

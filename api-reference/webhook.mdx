@@ -1,0 +1,53 @@
+---
+title: "CI/CD Webhook"
+api: "POST /webhook/ci"
+description: "Ingest CI/CD events as memories — deployments, PR merges, decisions."
+---
+
+A generic webhook for CI/CD pipelines. Stores events as tagged memories with full metadata. Use with GitHub Actions, Jenkins, or any CI system.
+
+## Request Body
+
+<ParamField body="content" type="string" required>
+  Event description or content to store.
+</ParamField>
+
+<ParamField body="event_type" type="string" default="ci_event">
+  Event type — used as a tag prefix (`ci:{event_type}`). Examples: `deployment`, `pr_merge`, `decision`.
+</ParamField>
+
+<ParamField body="tags" type="array">
+  Additional tags.
+</ParamField>
+
+Any extra fields in the body are stored as metadata.
+
+## Response
+
+```json
+{
+  "stored": true,
+  "id": "abc-123",
+  "event_type": "deployment"
+}
+```
+
+## Example: GitHub Actions
+
+```yaml
+- name: Store deployment in Velixar
+  run: |
+    curl -X POST "$VELIXAR_API_URL/webhook/ci" \
+      -H "Authorization: Bearer $VELIXAR_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{
+        "event_type": "deployment",
+        "content": "Deployed v1.0.0 to production",
+        "tags": ["production"],
+        "version": "1.0.0"
+      }'
+```
+
+Pre-built GitHub Actions are available:
+- [velixar-memory-sync](https://github.com/VelixarAi/velixar-mcp-server/tree/main/github-actions/velixar-memory-sync) — distill PR merges into memories
+- [velixar-decision-capture](https://github.com/VelixarAi/velixar-mcp-server/tree/main/github-actions/velixar-decision-capture) — store issue resolutions as decisions

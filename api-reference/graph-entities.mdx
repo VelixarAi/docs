@@ -1,0 +1,35 @@
+---
+title: "List Graph Entities"
+api: "GET /graph/entities"
+description: "List entities in the knowledge graph."
+---
+
+Returns entities extracted from your memories — people, projects, technologies, concepts, and their properties.
+
+## Query Parameters
+
+<ParamField query="limit" type="integer" default="20">
+  Maximum entities to return (max 100).
+</ParamField>
+
+## Response
+
+```json
+{
+  "entities": [
+    {
+      "id": "node-abc123",
+      "entity_type": "technology",
+      "label": "PostgreSQL",
+      "properties": {
+        "description": "Primary database",
+        "salience": 0.85
+      }
+    }
+  ]
+}
+```
+
+<ResponseField name="entities" type="array">
+  Array of graph entities with type, label, and properties.
+</ResponseField>

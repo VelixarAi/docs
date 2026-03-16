@@ -1,0 +1,26 @@
+---
+title: "Detect Contradictions"
+api: "GET /exocortex/contradictions"
+description: "Surface conflicting facts or beliefs in stored memories."
+---
+
+Scans your memory corpus for contradictions — cases where two memories assert incompatible facts. Returns pairs with severity and descriptions.
+
+## Response
+
+```json
+{
+  "contradictions": [
+    {
+      "memory_a": "abc-123",
+      "memory_b": "def-456",
+      "description": "Memory A says staging is us-west-2, Memory B says staging is eu-west-1",
+      "severity": "high"
+    }
+  ]
+}
+```
+
+<ResponseField name="contradictions" type="array">
+  Array of contradiction pairs with severity (`low`, `medium`, `high`).
+</ResponseField>

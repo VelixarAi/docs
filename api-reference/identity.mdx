@@ -1,0 +1,30 @@
+---
+title: "Get Identity"
+api: "GET /memory/identity"
+description: "Get the user's identity profile for a workspace."
+---
+
+Returns the persistent identity profile — expertise, communication style, goals, and preferences — built from stored memories.
+
+## Query Parameters
+
+<ParamField query="user_id" type="string" required>
+  User ID to retrieve identity for.
+</ParamField>
+
+## Response
+
+```json
+{
+  "identity": {
+    "expertise": ["TypeScript", "distributed systems", "AI/ML"],
+    "communication_style": "direct, technical, prefers code examples",
+    "recurring_goals": ["ship fast", "maintain quality"],
+    "stable_constraints": ["no vendor lock-in", "open source preferred"],
+    "preferences": {
+      "language": "TypeScript",
+      "framework": "none — vanilla preferred"
+    }
+  }
+}
+```

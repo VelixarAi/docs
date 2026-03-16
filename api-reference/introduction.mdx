@@ -1,6 +1,6 @@
 ---
 title: "API Reference"
-description: "Complete reference for the Velixar Memory API."
+description: "Complete reference for the Velixar API — memory, knowledge graph, identity, and CI/CD webhook."
 ---
 
 ## Base URL
@@ -17,58 +17,100 @@ All endpoints require a Bearer token:
 Authorization: Bearer vlx_your_api_key
 ```
 
-## Endpoints
+Get your key from [Settings → API Keys](https://velixarai.com/settings).
+
+## Memory
 
 <CardGroup cols={2}>
-  <Card title="POST /v1/memory" icon="plus" href="/api-reference/store-memory">
+  <Card title="POST /memory" icon="plus" href="/api-reference/store-memory">
     Store a new memory
   </Card>
-  <Card title="GET /v1/memory/search" icon="magnifying-glass" href="/api-reference/search-memories">
-    Search memories by semantic similarity
+  <Card title="GET /memory/search" icon="magnifying-glass" href="/api-reference/search-memories">
+    Semantic search across memories
   </Card>
-  <Card title="GET /v1/memory/:id" icon="eye" href="/api-reference/get-memory">
+  <Card title="GET /memory/:id" icon="eye" href="/api-reference/get-memory">
     Retrieve a specific memory
   </Card>
-  <Card title="GET /v1/memory/list" icon="list" href="/api-reference/list-memories">
+  <Card title="GET /memory/list" icon="list" href="/api-reference/list-memories">
     List memories with pagination
   </Card>
-  <Card title="PATCH /v1/memory/:id" icon="pen" href="/api-reference/update-memory">
+  <Card title="PATCH /memory/:id" icon="pen" href="/api-reference/update-memory">
     Update a memory
   </Card>
-  <Card title="DELETE /v1/memory/:id" icon="trash" href="/api-reference/delete-memory">
+  <Card title="DELETE /memory/:id" icon="trash" href="/api-reference/delete-memory">
     Delete a memory
   </Card>
-  <Card title="GET /v1/health" icon="heart-pulse" href="/api-reference/health">
+</CardGroup>
+
+## Knowledge Graph
+
+<CardGroup cols={2}>
+  <Card title="GET /graph/entities" icon="circle-nodes" href="/api-reference/graph-entities">
+    List knowledge graph entities
+  </Card>
+  <Card title="POST /graph/traverse" icon="diagram-project" href="/api-reference/graph-traverse">
+    Walk entity relationships from a focal point
+  </Card>
+  <Card title="POST /graph/search" icon="magnifying-glass" href="/api-reference/graph-search">
+    Search entities by name or type
+  </Card>
+</CardGroup>
+
+## Identity & Cognitive
+
+<CardGroup cols={2}>
+  <Card title="GET /memory/identity" icon="user" href="/api-reference/identity">
+    Get user identity profile
+  </Card>
+  <Card title="GET /exocortex/overview" icon="brain" href="/api-reference/overview">
+    Knowledge graph stats and memory density
+  </Card>
+  <Card title="GET /exocortex/contradictions" icon="triangle-exclamation" href="/api-reference/contradictions">
+    Detect conflicting memories
+  </Card>
+</CardGroup>
+
+## Integration
+
+<CardGroup cols={2}>
+  <Card title="POST /webhook/ci" icon="webhook" href="/api-reference/webhook">
+    CI/CD event ingestion — store deployment, PR, and decision events as memories
+  </Card>
+  <Card title="GET /health" icon="heart-pulse" href="/api-reference/health">
     Health check
   </Card>
 </CardGroup>
 
-## Common response format
+## OpenAPI Spec
+
+A full [OpenAPI 3.1 specification](https://github.com/VelixarAi/velixar-mcp-server/blob/main/openapi.json) is available for code generation and API exploration.
+
+## Response Format
 
 All successful responses return JSON:
 
 ```json
 {
-  "data": { ... },
-  "status": "ok"
+  "id": "abc-123",
+  "content": "...",
+  "tags": ["decision", "architecture"]
 }
 ```
 
-## Error format
+## Error Format
 
 ```json
 {
-  "error": "error_code",
-  "message": "Human-readable description",
+  "error": "Human-readable description",
   "status": 400
 }
 ```
 
-| Code | Error | Description |
-|---|---|---|
-| 400 | `bad_request` | Invalid parameters |
-| 401 | `unauthorized` | Missing or invalid API key |
-| 403 | `forbidden` | Key lacks required scope |
-| 404 | `not_found` | Memory not found |
-| 429 | `rate_limit_exceeded` | Too many requests |
-| 500 | `internal_error` | Server error |
+| Code | Meaning |
+|------|---------|
+| 400 | Invalid parameters |
+| 401 | Missing or invalid API key |
+| 403 | Key lacks required scope |
+| 404 | Resource not found |
+| 429 | Rate limit exceeded (check `Retry-After` header) |
+| 500 | Server error |

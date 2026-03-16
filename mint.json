@@ -73,17 +73,43 @@
       ]
     },
     {
-      "group": "Memory API",
+      "group": "API Reference",
       "pages": [
         "api-reference/introduction",
-        "api-reference/store-memory",
-        "api-reference/search-memories",
-        "api-reference/get-memory",
-        "api-reference/list-memories",
-        "api-reference/update-memory",
-        "api-reference/delete-memory",
-        "api-reference/org-memory",
-        "api-reference/health"
+        {
+          "group": "Memory",
+          "pages": [
+            "api-reference/store-memory",
+            "api-reference/search-memories",
+            "api-reference/get-memory",
+            "api-reference/list-memories",
+            "api-reference/update-memory",
+            "api-reference/delete-memory"
+          ]
+        },
+        {
+          "group": "Knowledge Graph",
+          "pages": [
+            "api-reference/graph-entities",
+            "api-reference/graph-traverse",
+            "api-reference/graph-search"
+          ]
+        },
+        {
+          "group": "Cognitive",
+          "pages": [
+            "api-reference/identity",
+            "api-reference/overview",
+            "api-reference/contradictions"
+          ]
+        },
+        {
+          "group": "Integration",
+          "pages": [
+            "api-reference/webhook",
+            "api-reference/health"
+          ]
+        }
       ]
     },
     {
