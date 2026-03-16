@@ -3,7 +3,7 @@ title: "Architecture"
 description: "How Velixar is built — infrastructure, data flow, and design principles."
 ---
 
-Velixar is a cloud-native memory platform built on AWS, designed for low-latency semantic recall at scale.
+Velixar is a cloud-native cognitive memory platform built on AWS, designed for low-latency semantic recall, knowledge graph traversal, and identity-aware reasoning at scale.
 
 ## High-Level Architecture
 
@@ -14,13 +14,13 @@ Velixar is a cloud-native memory platform built on AWS, designed for low-latency
 │   cURL)      │     │   Limiting)      │     │                 │
 └──────────────┘     └──────────────────┘     └────────┬────────┘
                                                        │
-                              ┌─────────────────────────┼──────────────────────┐
-                              │                         │                      │
-                     ┌────────▼────────┐   ┌────────────▼──────┐   ┌──────────▼──────┐
-                     │  Vector Store   │   │  Relational DB    │   │  Cache Layer    │
-                     │  (Embeddings +  │   │  (Metadata, Auth, │   │  (Rate Limits,  │
-                     │   Similarity)   │   │   Audit Trails)   │   │   Sessions)     │
-                     └─────────────────┘   └───────────────────┘   └─────────────────┘
+                     ┌─────────────────────────┬───────┼───────┬──────────────────────┐
+                     │                         │               │                      │
+            ┌────────▼────────┐   ┌────────────▼──────┐   ┌───▼──────────────┐   ┌───▼─────────────┐
+            │  Vector Store   │   │  Relational DB    │   │  Knowledge Graph │   │  Cache Layer    │
+            │  (Embeddings +  │   │  (Metadata, Auth, │   │  (Entities,      │   │  (Rate Limits,  │
+            │   Similarity)   │   │   Audit Trails)   │   │   Relationships) │   │   Sessions)     │
+            └─────────────────┘   └───────────────────┘   └──────────────────┘   └─────────────────┘
 ```
 
 ## Design Principles
@@ -28,7 +28,9 @@ Velixar is a cloud-native memory platform built on AWS, designed for low-latency
 - **Serverless-first** — No idle infrastructure. Compute scales to zero and up to thousands of concurrent requests automatically.
 - **Multi-tenant isolation** — Every user's data is logically isolated at the database, vector store, and API layers. Org memory uses separate vector collections per team and organization.
 - **Semantic by default** — Every memory is embedded on write. Search is always vector-based, not keyword matching.
-- **Event-driven** — Embedding, backups, and sync operations are triggered by database events, not polling.
+- **Graph-enriched** — Entities and relationships are extracted from memories into a knowledge graph, enabling traversal and structural reasoning alongside vector search.
+- **Identity-aware** — User preferences, expertise, and goals are tracked as a persistent identity model, enabling personalized recall.
+- **Event-driven** — Embedding, extraction, backups, and sync operations are triggered by database events, not polling.
 
 ## Data Flow
 
@@ -38,7 +40,8 @@ Velixar is a cloud-native memory platform built on AWS, designed for low-latency
 2. Request is authenticated and rate-limited at the gateway
 3. The memory is persisted to the relational store
 4. A vector embedding is generated and stored in the vector index
-5. Response returns with the memory ID
+5. Entities and relationships are extracted into the knowledge graph
+6. Response returns with the memory ID
 
 ### Recall
 
@@ -46,7 +49,8 @@ Velixar is a cloud-native memory platform built on AWS, designed for low-latency
 2. The query is embedded into the same vector space
 3. Cosine similarity search runs across all accessible collections
 4. Results are ranked, deduplicated, and enriched with metadata
-5. Top matches are returned with relevance scores
+5. If relevant, knowledge graph context is attached (related entities, contradictions)
+6. Top matches are returned with relevance scores
 
 ### Org Memory
 
@@ -65,6 +69,7 @@ Org memories follow an event-driven pipeline:
 | API Gateway | Request routing, authentication, rate limiting |
 | Serverless Compute | Stateless request handling, embedding generation |
 | Vector Database | High-dimensional similarity search with collection-level isolation |
+| Knowledge Graph Store | Entity and relationship storage, traversal queries |
 | Relational Database | Memory metadata, user data, org structure, audit logs |
 | Cache | Per-user rate limit tracking, session state |
 | Object Storage | Static assets, backups |

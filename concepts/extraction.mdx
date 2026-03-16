@@ -19,6 +19,9 @@ Velixar can automatically extract key facts, preferences, and decisions from con
   <Step title="LLM extracts memories">
     An LLM analyzes the conversation and pulls out discrete facts, preferences, and decisions with a salience score.
   </Step>
+  <Step title="Entity extraction">
+    Entities (people, tools, projects, concepts) and their relationships are extracted from each memory and added to the knowledge graph. This enables graph traversal and structural queries alongside vector search.
+  </Step>
   <Step title="Dedup & conflict resolution">
     - **Semantic dedup**: If a new memory has cosine similarity > 0.85 with an existing one, it's skipped
     - **Conflict resolution**: If the new memory contradicts an old one, the old memory is deleted and the new one is stored
