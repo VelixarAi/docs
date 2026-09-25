@@ -28,15 +28,15 @@ By default, new keys are created with `memory:read` + `memory:write`.
 
 ## Rate limits
 
-Rate limits are applied per API key based on your plan:
+Rate limits are applied per account (all of your keys share one limit) based on your plan:
 
 | Plan | Requests/min |
 |---|---|
 | Free | 30 |
-| Pro | 300 |
-| Power | 1,000 |
-| Teams | 2,000 |
-| Max | 5,000 |
+| Cortex | 300 |
+| Synapse | 1,000 |
+| Hivemind | 2,000 |
+| Enterprise | Contract |
 
 When rate limited, the API returns `429` with headers:
 
