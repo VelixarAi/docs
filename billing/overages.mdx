@@ -1,31 +1,22 @@
 ---
 title: "Overages"
-description: "How overage billing works on paid plans."
+description: "How usage past your monthly limit is billed on paid plans."
 ---
 
 ## How overages work
 
-On paid plans, you're never hard-blocked. If you exceed your plan's monthly limits, overage charges apply automatically via Stripe metered billing.
+On paid plans (Cortex, Synapse, Hivemind) you are not hard-blocked at your monthly limit. Memory stores and retrievals past the limit are billed as overage through Stripe metered billing, on the invoice for that month.
+
+On Free there is no overage. Requests are rejected at the limit until it resets on the 1st (UTC).
 
 ## Overage rates
 
-| Operation | Overage price |
-|---|---|
-| Memory stores | $2.00 per 1,000 over limit |
-| Retrievals | $1.00 per 1,000 over limit |
-
-## Example
-
-On the **Pro** plan (50K memories, 250K retrievals):
-- You store 55,000 memories → 5,000 over → **$10.00** overage
-- You make 260,000 retrievals → 10,000 over → **$10.00** overage
-
-Total bill: $30 (plan) + $20 (overage) = **$50**
+Current overage rates are shown on [velixarai.com/pricing](https://velixarai.com/pricing) and at checkout. We do not repeat the figures here, so that this page cannot disagree with what you are actually charged.
 
 ## Monitoring
 
-Track your usage in real-time from the [API Usage dashboard](https://velixarai.com/settings/api-usage) to avoid unexpected charges.
+Track your usage in [Settings](https://velixarai.com/settings) or with `GET /v1/usage`. See [Usage limits](/billing/usage-limits).
 
 <Tip>
-  If you're consistently hitting overages, upgrade to the next tier — it's almost always cheaper than paying overage rates.
+  If you are regularly over your limit, compare the next plan up with your overage total. A higher plan is often cheaper.
 </Tip>

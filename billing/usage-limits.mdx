@@ -1,43 +1,45 @@
 ---
 title: "Usage Limits"
-description: "How usage limits and rate limiting work."
+description: "How monthly limits and per-minute rate limits work."
 ---
 
 ## Monthly limits
 
-Each plan has monthly limits for **memory stores** and **retrievals**. Usage resets on the 1st of each month (UTC).
+Each plan has monthly limits for **memory stores** and **retrievals**. These are counters of operations, not storage capacity. They reset on the 1st of each month at 00:00 UTC. See [Plans](/billing/plans) for the numbers.
 
-Check your current usage via the [dashboard](https://velixarai.com/settings/api-usage) or API:
+Check your current usage in [Settings](https://velixarai.com/settings) or with the API:
 
 ```bash
-curl https://api.velixarai.com/usage \
+curl https://api.velixarai.com/v1/usage \
   -H "Authorization: Bearer vlx_your_key"
 ```
 
 ## Rate limiting
 
-Rate limits are per-minute, per API key. When exceeded, the API returns `429`:
+Each plan also has a per-minute request limit. It is counted per account, not per API key, so several keys on one account share the same limit. When it is exceeded, the API returns `429`:
 
 ```json
 {
-  "error": "rate_limit_exceeded",
-  "message": "Rate limit exceeded",
-  "retry_after": 42
+  "error": { "code": "RATE_001", "message": "Rate limit exceeded" },
+  "retry_after": 1708099260
 }
 ```
 
-Response headers on every request:
+Rate-limited responses carry these headers:
 
 ```
 X-RateLimit-Limit: 300
-X-RateLimit-Remaining: 287
+X-RateLimit-Remaining: 0
 X-RateLimit-Reset: 1708099260
+Retry-After: 42
 ```
 
-## Free tier behavior
+A per-minute limit clears within a minute. Wait for `Retry-After` seconds and retry.
 
-On the free tier, requests are **hard-blocked** when limits are reached. No overage is allowed.
+## Free plan behavior
 
-## Paid tier behavior
+On Free, requests are **rejected** once a monthly limit is reached, until the limit resets on the 1st (UTC). There is no overage on Free. Retrying before the reset will not succeed. To continue now, upgrade from [Settings](https://velixarai.com/settings).
 
-On paid tiers, requests continue past the limit and overage charges apply. See [Overages](/billing/overages).
+## Paid plan behavior
+
+On paid plans, requests continue past the monthly limit and overage charges apply. See [Overages](/billing/overages).

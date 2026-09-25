@@ -45,12 +45,14 @@ API keys are scoped to a single user and can be rotated from the dashboard. JWTs
 
 Every API key and user is subject to tier-aware rate limits:
 
-| Plan | Memories / month | Retrievals / month |
+| Plan | Memory stores / month | Retrievals / month |
 |------|------------------|--------------------|
 | Free | 100 | 500 |
-| Pro | 10,000 | 250,000 |
-| Power | 250,000 | 1,000,000 |
-| Team | 5,000 / seat | 100,000 / seat |
+| Cortex | 10,000 | 250,000 |
+| Synapse | 250,000 | 1,000,000 |
+| Hivemind | 5,000 / seat | 100,000 / seat |
+
+See [Plans](/billing/plans) for current plans and prices.
 
 Rate limits are tracked in a persistent cache. If the cache is temporarily unavailable, the system falls back to per-instance tracking rather than disabling limits — **rate limiting never fails open**.
 
