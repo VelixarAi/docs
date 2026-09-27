@@ -1,0 +1,42 @@
+---
+title: "Token efficiency: the evidence"
+description: "A reproducible LongMemEval context audit, including complete reader usage and task-level differences."
+---
+
+## Scope of this measurement
+
+This is a September 27, 2026 re-audit of saved LongMemEval artifacts, not a new production traffic experiment. It joins 120 saved contexts with 120 successful reader records by question ID. Two error records in the answer log are excluded from the successful-question averages; their possible spend is unknown. These benchmark categories are question types, not VOU operation families.
+
+The baseline is the complete stored history for each question, counted session by session using the harness's serialization. All 120 baseline counts were recomputed from the original dataset and matched the recorded counts. Retrieved contexts were independently counted with `tiktoken 0.12.0`, encoding `o200k_base`. The model input and output columns come from the saved provider-usage fields. The harness applied question-scope filtering to retrieved hits before sending them to the reader.
+
+## Tokens per successful question
+
+Values below are means, rounded to whole tokens. Percentages use unrounded token totals within each group. Small groups should not be treated as reliable forecasts for other workloads.
+
+| Question type | Questions | Full-history context | Retrieved context | Complete reader input | Reader output | Context reduction |
+|---|---:|---:|---:|---:|---:|---:|
+| Knowledge updates | 19 | 103,524 | 15,741 | 15,838 | 635 | 84.79% |
+| Questions across sessions | 32 | 103,290 | 14,422 | 14,521 | 1,028 | 86.04% |
+| Assistant facts in one session | 13 | 103,688 | 22,879 | 22,987 | 512 | 77.93% |
+| User preferences | 7 | 103,233 | 19,326 | 19,423 | 2,242 | 81.28% |
+| User facts in one session | 17 | 103,591 | 18,186 | 18,279 | 384 | 82.44% |
+| Temporal reasoning | 32 | 103,411 | 14,206 | 14,313 | 946 | 86.26% |
+| All paired questions | 120 | 103,442 | 16,309 | 16,410 | 868 | 84.23% |
+
+Across the paired sample, the history baseline contains **12,413,007 tokens** and retrieved context contains **1,957,039 tokens**. The difference is **10,455,968 context tokens**. Recorded reader usage totals **1,969,149 input tokens** and **104,132 output tokens**.
+
+Reader input includes prompt framing and the question, while the baseline column contains history only. Comparing reader input with that history reference yields **84.14% fewer tokens**; it is not a comparison of two fully executed model requests. Do not mix that value with the context-only 84.23% claim.
+
+## What this does not establish
+
+This artifact does not include a matched full-context execution arm, its output usage, complete retry spend, ingestion cost, a cached-input breakdown or customer invoice reconciliation. It therefore does not establish equal answer quality or dollar savings. Published answer-quality experiments use their own reader/judge protocols and should not be silently paired with this token sample.
+
+A separate GateMem example of 7,727 versus 3,517 context tokens describes another workload. Its approximately 54.5% reduction is neither a ceiling nor the general Velixar rate. Likewise, a retrieval-recall percentage is not a token-reduction percentage.
+
+## Reproducibility and correction history
+
+The aggregate audit receipt is versioned in this documentation repository at `evidence/longmemeval-token-audit-2026-09-27.json`. It records tokenizer version, source file hashes, sample sizes, totals, means and limitations. It contains no benchmark conversations, answers or customer content. Maintainers can reproduce it with `scripts/audit_token_evidence.py`, supplying local artifact and dataset paths; the script requires `tiktoken==0.12.0`.
+
+The earlier published figure of 16,274 retrieved tokens is not reproduced by the current `panel_context.jsonl` artifact. This audit reports **16,308.6583** rather than silently treating the older figure as an identical run. The broad claim remains approximately 84% less context. A future stronger result must carry its own source receipt and comparable workload definition.
+
+See [VOU and token usage](/billing/vou-and-token-usage) for how this evidence translates into an operation-level explanation.

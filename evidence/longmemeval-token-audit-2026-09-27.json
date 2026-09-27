@@ -1,0 +1,140 @@
+{
+  "audited_at": "2026-09-27",
+  "tokenizer": "o200k_base",
+  "tiktoken_version": "0.12.0",
+  "source_sha256": {
+    "panel_context.jsonl": "a79540ff3d84cf7e33e578dc18dcaafd995c989a7fdcb4d71334b733cf95cfbb",
+    "answers.jsonl": "1ea4d44f22b6347b61caa06c4c218f746828e40f8050388af004b117013c048c",
+    "run.py": "170da07d71effd143d54958e078d94a9435ec92cc8ecd60788c1eb893e0fce99"
+  },
+  "all": {
+    "n": 120,
+    "totals": {
+      "baseline_context": 12413007,
+      "retrieved_context": 1957039,
+      "reader_input": 1969149,
+      "reader_output": 104132
+    },
+    "means": {
+      "baseline_context": 103441.725,
+      "retrieved_context": 16308.658333333333,
+      "reader_input": 16409.575,
+      "reader_output": 867.7666666666667
+    },
+    "context_reduction_pct": 84.2339652269591,
+    "input_vs_context_reference_pct": 84.13640627126047
+  },
+  "by_task": {
+    "knowledge-update": {
+      "n": 19,
+      "totals": {
+        "baseline_context": 1966964,
+        "retrieved_context": 299077,
+        "reader_input": 300929,
+        "reader_output": 12066
+      },
+      "means": {
+        "baseline_context": 103524.42105263157,
+        "retrieved_context": 15740.894736842105,
+        "reader_input": 15838.368421052632,
+        "reader_output": 635.0526315789474
+      },
+      "context_reduction_pct": 84.79499370603631,
+      "input_vs_context_reference_pct": 84.70083844950899
+    },
+    "multi-session": {
+      "n": 32,
+      "totals": {
+        "baseline_context": 3305294,
+        "retrieved_context": 461517,
+        "reader_input": 464681,
+        "reader_output": 32909
+      },
+      "means": {
+        "baseline_context": 103290.4375,
+        "retrieved_context": 14422.40625,
+        "reader_input": 14521.28125,
+        "reader_output": 1028.40625
+      },
+      "context_reduction_pct": 86.03703634230419,
+      "input_vs_context_reference_pct": 85.94131112088668
+    },
+    "single-session-assistant": {
+      "n": 13,
+      "totals": {
+        "baseline_context": 1347938,
+        "retrieved_context": 297431,
+        "reader_input": 298827,
+        "reader_output": 6654
+      },
+      "means": {
+        "baseline_context": 103687.53846153847,
+        "retrieved_context": 22879.30769230769,
+        "reader_input": 22986.69230769231,
+        "reader_output": 511.84615384615387
+      },
+      "context_reduction_pct": 77.93437086868981,
+      "input_vs_context_reference_pct": 77.83080527442657
+    },
+    "single-session-preference": {
+      "n": 7,
+      "totals": {
+        "baseline_context": 722629,
+        "retrieved_context": 135279,
+        "reader_input": 135961,
+        "reader_output": 15693
+      },
+      "means": {
+        "baseline_context": 103232.71428571429,
+        "retrieved_context": 19325.571428571428,
+        "reader_input": 19423.0,
+        "reader_output": 2241.8571428571427
+      },
+      "context_reduction_pct": 81.27960544068948,
+      "input_vs_context_reference_pct": 81.1852278278342
+    },
+    "single-session-user": {
+      "n": 17,
+      "totals": {
+        "baseline_context": 1761045,
+        "retrieved_context": 309155,
+        "reader_input": 310748,
+        "reader_output": 6525
+      },
+      "means": {
+        "baseline_context": 103590.88235294117,
+        "retrieved_context": 18185.58823529412,
+        "reader_input": 18279.29411764706,
+        "reader_output": 383.8235294117647
+      },
+      "context_reduction_pct": 82.44479840094944,
+      "input_vs_context_reference_pct": 82.35434074654538
+    },
+    "temporal-reasoning": {
+      "n": 32,
+      "totals": {
+        "baseline_context": 3309137,
+        "retrieved_context": 454580,
+        "reader_input": 458003,
+        "reader_output": 30285
+      },
+      "means": {
+        "baseline_context": 103410.53125,
+        "retrieved_context": 14205.625,
+        "reader_input": 14312.59375,
+        "reader_output": 946.40625
+      },
+      "context_reduction_pct": 86.26288364609866,
+      "input_vs_context_reference_pct": 86.15944277918986
+    }
+  },
+  "failed_records_excluded": 2,
+  "limitations": [
+    "Baseline tokenized stored history, not an executed full-context provider arm.",
+    "Reader input includes prompt framing; baseline context does not.",
+    "Source harness filters retrieved hits by question scope.",
+    "No cached-input split, retry spend, ingestion spend or baseline output usage.",
+    "Published 16274 context mean is not reproduced by present panel_context.jsonl; current recomputation is 16308.6583.",
+    "No matched-quality or invoice-saving claim."
+  ]
+}
