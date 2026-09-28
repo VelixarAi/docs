@@ -35,7 +35,7 @@ A separate GateMem example of 7,727 versus 3,517 context tokens describes anothe
 
 ## Reproducibility and correction history
 
-The aggregate audit receipt is versioned in this documentation repository at `evidence/longmemeval-token-audit-2026-09-27.json`. It records tokenizer version, source file hashes, sample sizes, totals, means and limitations. It contains no benchmark conversations, answers or customer content. Maintainers can reproduce it with `scripts/audit_token_evidence.py`, supplying local artifact and dataset paths; the script requires `tiktoken==0.12.0`.
+The aggregate audit receipt is versioned in this documentation repository at `evidence/longmemeval-token-audit-2026-09-27.json`. It records tokenizer version, source file and original dataset hashes, sample sizes, totals, means and limitations. It contains no benchmark conversations, answers or customer content. Maintainers can reproduce it with `scripts/audit_token_evidence.py`, supplying local artifact and dataset paths; the script requires `tiktoken==0.12.0`. Use `--verify-against evidence/longmemeval-token-audit-2026-09-27.json` to require matching source hashes, tokenizer and complete recomputed results. Verification refuses changed source bytes even when the token counts are unchanged.
 
 The earlier published figure of 16,274 retrieved tokens is not reproduced by the current `panel_context.jsonl` artifact. This audit reports **16,308.6583** rather than silently treating the older figure as an identical run. The broad claim remains approximately 84% less context. A future stronger result must carry its own source receipt and comparable workload definition.
 
