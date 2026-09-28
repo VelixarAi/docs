@@ -1,0 +1,63 @@
+---
+title: "VOU and token usage"
+description: "Understand governed operations, model tokens, and the evidence behind token savings."
+---
+
+Velixar retrieves relevant memory so an agent can work with less history in its prompt. VOU describes the governed work performed by Velixar. Model tokens describe the input and output processed by a model. Your charge depends on your applicable billing terms. These are separate measurements.
+
+## What a VOU explains
+
+A VOU receipt should answer what operation ran, how much work was recorded, which weight schedule applied, and how the result was rated. The same customer task can involve memory retrieval, graph queries, model calls, and governance. A task is not necessarily one operation or one VOU.
+
+Weights belong to a versioned schedule. Resource facts that support another operation must not also become a second positive VOU charge for the same work. When comparing receipts, use the schedule stored with each entry, including corrections, rather than applying today's weights to historical work.
+
+A displayed VOU count does not by itself establish a charge. Check the receipt's commercial status, rating class, applicable allowance, and effective price. An assumption-based weight is not a measured infrastructure cost. Missing or incomplete metering must remain visible rather than appearing as zero usage.
+
+## What token usage explains
+
+For a model invocation, distinguish:
+
+- **Input tokens:** the complete request processed by the model, including instructions, retrieved memory, conversation and tool results.
+- **Output tokens:** the generated output reported by the provider. Some providers include reasoning tokens within this count; do not add them a second time.
+- **Cached input:** the provider's cached portion or separate billing bucket. Cache semantics and prices depend on the provider.
+- **Retrieved context:** the memory text selected for the prompt. This is only part of the input.
+
+A memory lookup does not imply a fixed amount of downstream model usage. Velixar may not observe a model call made outside its gateway. In that case, downstream token spend is unknown, not zero.
+
+**There is no fixed conversion from one VOU to a number of tokens.** Reducing context can reduce model input while the system still performs useful retrieval and governance work.
+
+## What we have measured
+
+In a re-audit of a saved 120-question LongMemEval run, the full histories averaged **103,442 tokens** and the retrieved context averaged **16,309 tokens**: **84.23% less context**, or about **6.34 times smaller**. The recorded reader usage averaged **16,410 input tokens and 868 output tokens per successful question**.
+
+The history baseline was locally tokenized, not sent through a matched full-context model run. This demonstrates context reduction for this workload. It does not demonstrate an 84.23% reduction in a customer's total bill or equal answer quality between two execution paths. Other workloads can differ substantially.
+
+See [the measurement details and task breakdown](/guides/token-efficiency-evidence).
+
+## Translating an operation into spend
+
+Prefer the provider's actual usage receipt. Where cost is calculated, use the effective rates for that exact provider, deployment, region and billing agreement at execution time. A model name alone is insufficient.
+
+For an adapter that supplies mutually exclusive input buckets, the calculation is:
+
+```text
+model cost = uncached input × uncached input rate
+           + cached input × cached input rate
+           + cache writes × cache write rate, if separately billed
+           + output × output rate
+           + any separately billed provider charges
+```
+
+Rates must use the same units as the counts. For rates per million tokens, divide the token counts by 1,000,000. If a provider includes cached input within total input, subtract it once before pricing uncached input. If it reports separate cache buckets, follow that provider's receipt semantics instead. Missing cache information cannot be treated as a measured zero.
+
+For the audited run, **16,409.575 input and 867.7667 output tokens** are the mean recorded quantities per successful question. They can inform a clearly labelled scenario using your rates; the artifact lacks cache and retry accounting, so it cannot establish an exact invoice amount. Do not apply these quantities to every task type.
+
+For an end-to-end task, account for every actual model attempt, including paid failures and retries, and any attributable ingestion or indexing work. Show provider cost separately from Velixar charges and credits. A local model's compute cost is not automatically zero.
+
+## Reading a savings claim
+
+A useful explanation names the baseline, operation scope, tokenizer or provider, sample size, time window and measurement method. It also says whether the comparison is measured, estimated, or a reference scenario.
+
+Context reduction is `1 − retrieved context / baseline context`. Aggregate it from token totals over the same paired sample, not by averaging percentages from unrelated requests. Actual monetary savings require comparable cost evidence on both paths. Without that evidence, describe the token difference and leave monetary savings unknown.
+
+For a customer operation, expect an explanation to keep four answers distinct: **what Velixar did; what the model processed; what was charged; and what comparison, if any, supports a savings estimate.**

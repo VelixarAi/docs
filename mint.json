@@ -61,7 +61,8 @@
       "pages": [
         "guides/chatbot-memory",
         "guides/user-preferences",
-        "guides/rag-augmentation"
+        "guides/rag-augmentation",
+        "guides/token-efficiency-evidence"
       ]
     },
     {
@@ -69,7 +70,8 @@
       "pages": [
         "billing/plans",
         "billing/usage-limits",
-        "billing/overages"
+        "billing/overages",
+        "billing/vou-and-token-usage"
       ]
     },
     {
